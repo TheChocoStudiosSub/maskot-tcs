@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
-import {createMascot,setExpression,setPose,animateMascot,blinkMascot} from './mascot.js';
+import {createMascot,setExpression,setPose,setMouth,animateMascot,blinkMascot} from './mascot.js';
 import './style.css';
 
 const stage=document.querySelector('#stage');
@@ -66,7 +66,7 @@ if(renderer){
     activate('[data-expression]','expression',state.expression);
     setStatus('EKSPRESI: '+state.expression.toUpperCase());
   }));
-  document.querySelectorAll('[data-pose]').forEach(button=>button.addEventListener('click',()=>{
+  document.querySelectorAll('[data-mouth]').forEach(button=>button.addEventListener('click',()=>{\n    setMouth(mascot,button.dataset.mouth);\n    activate('[data-mouth]','mouth',button.dataset.mouth);\n    setStatus('GERAKAN MULUT: '+button.textContent.trim().toUpperCase());\n  }));\n  document.querySelectorAll('[data-pose]').forEach(button=>button.addEventListener('click',()=>{
     state.pose=button.dataset.pose;setPose(mascot,state.pose);
     activate('[data-pose]','pose',state.pose);
     setStatus('POSE: '+state.pose.toUpperCase());
@@ -94,8 +94,8 @@ if(renderer){
     document.querySelector('#idleToggle').checked=true;
     document.querySelector('#rotateToggle').checked=false;
     controls.enabled=true;blinkMascot(mascot,1);
-    setExpression(mascot,'happy');setPose(mascot,'idle');
-    activate('[data-expression]','expression','happy');activate('[data-pose]','pose','idle');
+    setExpression(mascot,'happy');setMouth(mascot,'closed');setPose(mascot,'idle');
+    activate('[data-expression]','expression','happy');activate('[data-mouth]','mouth','closed');activate('[data-pose]','pose','idle');
     setStatus('SIAP · INTERAKTIF');
   };
 
