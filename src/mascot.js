@@ -17,27 +17,30 @@ export function createMascot(){
  const head=new THREE.Group();head.position.set(0,1.22,.015);rig.add(head);ell(head,C.fur,[0,0,0],[.72,.67,.55]);const ears=[ear(head,-.48),ear(head,.48)];for(let i=0;i<3;i++)tuft(head,-.13+i*.13,.48+(i===1?.12:0),.12,.25,-.15+i*.15);
  for(const side of [-1,1]){ell(head,C.fur,[side*.57,-.28,.13],[.24,.22,.31]);for(let i=0;i<3;i++)tuft(head,side*(.56+i*.045),-.28-i*.13,.23,.2,side*(.55+i*.18));ell(head,C.fur,[side*.48,-.43,.25],[.22,.11,.17]);}
  const eyes=[eye(head,-.285),eye(head,.285)],brows=[ell(head,C.shade,[-.29,.39,.48],[.075,.025,.02]),ell(head,C.shade,[.29,.39,.48],[.075,.025,.02])];
- // Articulated mouth: dark oral cavity, upper incisors/canines, tongue and a hinged lower jaw.
- ell(head,C.ink,[0,-.02,.58],[.065,.042,.035]);
- const mouth=new THREE.Group();mouth.position.set(0,-.19,.565);head.add(mouth);
- const cavity=ell(mouth,C.ink,[0,0,0],[.18,.115,.045]);
- const upperTeeth=new THREE.Group();upperTeeth.position.set(0,.055,.045);mouth.add(upperTeeth);
- for(const x of [-.075,-.025,.025,.075])ell(upperTeeth,C.white,[x,-.012,0],[.023,.036,.018]);
- for(const x of [-.135,.135]){const fang=new THREE.Mesh(new THREE.ConeGeometry(.027,.075,10),C.white);fang.position.set(x,.005,.005);fang.rotation.z=Math.PI;upperTeeth.add(fang);}
- const jaw=new THREE.Group();jaw.position.set(0,-.035,.025);mouth.add(jaw);
- ell(jaw,C.fur,[0,-.055,0],[.17,.075,.055]);
- const lowerTeeth=new THREE.Group();lowerTeeth.position.set(0,.005,.045);jaw.add(lowerTeeth);
- for(const x of [-.07,-.023,.023,.07])ell(lowerTeeth,C.white,[x,.015,0],[.021,.025,.014]);
- const tongue=new THREE.Group();tongue.position.set(0,-.055,.065);jaw.add(tongue);
- ell(tongue,C.tongue,[0,0,0],[.075,.045,.018]);
- const tongueLine=ell(tongue,C.pink,[0,.018,.017],[.004,.025,.006]);
+ // Mouth proportions follow the original GitHub character sheet: a small centered cat smile, never a protruding muzzle.
+ const mouth=new THREE.Group();mouth.position.set(0,-.205,.575);head.add(mouth);
+ const mouthShape=new THREE.Shape();
+ mouthShape.moveTo(-.105,.035);
+ mouthShape.bezierCurveTo(-.095,-.015,-.045,-.095,0,-.095);
+ mouthShape.bezierCurveTo(.045,-.095,.095,-.015,.105,.035);
+ mouthShape.bezierCurveTo(.075,-.005,.035,.012,0,.012);
+ mouthShape.bezierCurveTo(-.035,.012,-.075,-.005,-.105,.035);
+ const cavity=new THREE.Mesh(new THREE.ShapeGeometry(mouthShape,24),C.ink);cavity.position.z=.012;mouth.add(cavity);
+ // A soft pink tongue sits inside the lower half of the mouth, matching the reference smile.
+ const tongue=ell(mouth,C.tongue,[0,-.045,.025],[.064,.043,.012]);
+ const tongueGroove=ell(mouth,C.pink,[0,-.035,.038],[.003,.023,.004]);
+ // Two tiny upper incisors are only visible on a wider opening; no oversized cartoon fangs.
+ const teeth=new THREE.Group();teeth.position.set(0,.012,.03);mouth.add(teeth);
+ for(const x of [-.018,.018])ell(teeth,C.white,[x,-.008,0],[.012,.018,.006]);
+ const jaw=new THREE.Group();jaw.position.set(0,-.07,.002);mouth.add(jaw);
+ ell(jaw,C.fur,[0,-.012,-.005],[.085,.025,.018]);
  tuft(head,0,.56,.13,.25);tuft(head,-.13,.5,.2,.18,-.25);tuft(head,.13,.5,.2,.18,.25);
  const shadow=new THREE.Mesh(new THREE.CircleGeometry(1.25,40),new THREE.MeshBasicMaterial({color:'#050923',transparent:true,opacity:.24}));shadow.rotation.x=-Math.PI/2;shadow.position.y=-.84;root.add(shadow);
- return {root,rig,body,head,eyes,brows,mouth:{group:mouth,cavity,jaw,upperTeeth,lowerTeeth,tongue,target:.18,open:.18,mode:'natural'},arms,legs,tail,ears,shadow,base:{legY:[-.39,-.39],bodyY:0},blinkAmount:1};
+ return {root,rig,body,head,eyes,brows,mouth:{group:mouth,cavity,jaw,teeth,tongue,target:.7,open:.7,mode:'natural'},arms,legs,tail,ears,shadow,base:{legY:[-.39,-.39],bodyY:0},blinkAmount:1};
 }
-const expressions={happy:{eye:[1,1],brow:[0,0],mouth:.18},wink:{eye:[1,.04],brow:[0,0],mouth:.24},surprised:{eye:[1.15,1.15],brow:[.12,.12],mouth:1},sleepy:{eye:[.38,.38],brow:[-.04,-.04],mouth:.08},angry:{eye:[.72,.72],brow:[-.2,.2],mouth:.12},sad:{eye:[.7,.7],brow:[.13,-.13],mouth:.1}};
-export function setExpression(m,name){const e=expressions[name]||expressions.happy;m.eyes.forEach((v,i)=>{v.baseOpen=e.eye[i];v.group.scale.y=e.eye[i]*(m.blinkAmount??1);v.lid.visible=e.eye[i]<.5;});m.brows.forEach((b,i)=>b.rotation.z=e.brow[i]);m.mouth.target=e.mouth;m.mouth.tongue.visible=true;}
+const expressions={happy:{eye:[1,1],brow:[0,0],mouth:.72},wink:{eye:[1,.04],brow:[0,0],mouth:.7},surprised:{eye:[1.15,1.15],brow:[.12,.12],mouth:1.35},sleepy:{eye:[.38,.38],brow:[-.04,-.04],mouth:.12},angry:{eye:[.72,.72],brow:[-.2,.2],mouth:.22},sad:{eye:[.7,.7],brow:[.13,-.13],mouth:.2}};
+export function setExpression(m,name){const e=expressions[name]||expressions.happy;m.eyes.forEach((v,i)=>{v.baseOpen=e.eye[i];v.group.scale.y=e.eye[i]*(m.blinkAmount??1);v.lid.visible=e.eye[i]<.5;});m.brows.forEach((b,i)=>b.rotation.z=e.brow[i]);m.mouth.target=e.mouth;}
 export function setPose(m,name){m.arms.forEach((a,i)=>{a.group.rotation.set(0,0,0);if(name==='wave'&&i===1){a.group.rotation.z=2.48;a.group.rotation.x=-.12;}else if(name==='cheer'){a.group.rotation.z=i===0?-2.3:2.3;a.group.rotation.x=-.12;}else if(name==='sit'){a.group.rotation.z=i===0?-.25:.25;}});m.legs.forEach((l,i)=>{l.rotation.set(0,0,0);l.position.y=name==='sit'?-.2:m.base.legY[i];if(name==='sit'){l.rotation.x=-.72;l.rotation.z=i===0?-.18:.18;}});m.base.bodyY=name==='sit'?.08:0;m.body.position.y=m.base.bodyY;m.head.position.y=name==='sit'?1.15:1.22;}
-export function setMouth(m,mode){m.mouth.mode=mode;m.mouth.target=mode==='closed'?.025:mode==='open'?.62:1.12;}
-export function animateMascot(m,t,opts){const idle=opts.idle;const y=m.base.bodyY+(idle?Math.sin(t*2.1)*.018:0);m.body.position.y+=(y-m.body.position.y)*.08;m.head.rotation.z+=( (idle?Math.sin(t*.8)*.012:0)-m.head.rotation.z)*.08;if(idle){m.tail.rotation.x=Math.sin(t*2.2)*.1;m.tail.rotation.z=Math.sin(t*1.6)*.08;}else{m.tail.rotation.x*=.92;m.tail.rotation.z*=.92;}const mouth=m.mouth;const target=mouth.target??.18;mouth.open+=(target-mouth.open)*Math.min(1,.22);mouth.cavity.scale.y=.015+mouth.open*.95;mouth.jaw.position.y=-.035-mouth.open*.045;mouth.jaw.rotation.x=mouth.open*.42;mouth.lowerTeeth.visible=mouth.open>.18;mouth.upperTeeth.visible=mouth.open>.04;mouth.tongue.scale.set(1,Math.max(.15,Math.min(1,mouth.open*1.15)),1);mouth.tongue.position.y=-.055-mouth.open*.012;if(opts.rotate)m.root.rotation.y+=.003;}
+export function setMouth(m,mode){m.mouth.mode=mode;m.mouth.target=mode==='closed'?.035:mode==='open'?.82:1.42;}
+export function animateMascot(m,t,opts){const idle=opts.idle;const y=m.base.bodyY+(idle?Math.sin(t*2.1)*.018:0);m.body.position.y+=(y-m.body.position.y)*.08;m.head.rotation.z+=( (idle?Math.sin(t*.8)*.012:0)-m.head.rotation.z)*.08;if(idle){m.tail.rotation.x=Math.sin(t*2.2)*.1;m.tail.rotation.z=Math.sin(t*1.6)*.08;}else{m.tail.rotation.x*=.92;m.tail.rotation.z*=.92;}const mouth=m.mouth;const target=mouth.target??.72;mouth.open+=(target-mouth.open)*.16;mouth.group.scale.y=.12+mouth.open*.88;mouth.jaw.rotation.x=mouth.open*.16;mouth.teeth.visible=mouth.open>.95;mouth.tongue.scale.y=.25+Math.min(1,mouth.open)*.75;mouth.tongue.position.y=-.045-mouth.open*.008;if(opts.rotate)m.root.rotation.y+=.003;}
 export function blinkMascot(m,amount){const v=THREE.MathUtils.clamp(amount,0,1);m.blinkAmount=v;m.eyes.forEach(e=>e.group.scale.y=(e.baseOpen??1)*v);}
