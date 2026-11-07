@@ -66,7 +66,12 @@ if(renderer){
     activate('[data-expression]','expression',state.expression);
     setStatus('EKSPRESI: '+state.expression.toUpperCase());
   }));
-  document.querySelectorAll('[data-mouth]').forEach(button=>button.addEventListener('click',()=>{\n    setMouth(mascot,button.dataset.mouth);\n    activate('[data-mouth]','mouth',button.dataset.mouth);\n    setStatus('GERAKAN MULUT: '+button.textContent.trim().toUpperCase());\n  }));\n  document.querySelectorAll('[data-pose]').forEach(button=>button.addEventListener('click',()=>{
+  document.querySelectorAll('[data-mouth]').forEach(button=>button.addEventListener('click',()=>{
+    setMouth(mascot,button.dataset.mouth);
+    activate('[data-mouth]','mouth',button.dataset.mouth);
+    setStatus('GERAKAN MULUT: '+button.textContent.trim().toUpperCase());
+  }));
+  document.querySelectorAll('[data-pose]').forEach(button=>button.addEventListener('click',()=>{
     state.pose=button.dataset.pose;setPose(mascot,state.pose);
     activate('[data-pose]','pose',state.pose);
     setStatus('POSE: '+state.pose.toUpperCase());
