@@ -1,61 +1,146 @@
 import * as THREE from 'three';
 
 /**
- * Procedural fallback humanoid-ish armature + skin weights for a static GLB.
- * Model bounds are used as proportions. Meshes are converted to SkinnedMesh
- * and receive 4-nearest-bone weights. This is a generic fallback, not a
- * replacement for artist-authored topology/weights.
+ * Procedural fallback armature for a static GLB.
+ * The generated rest pose is a horizontal T-pose so the mascot starts with
+ * both arms extended. Weights are assigned in model space and meshes are
+ * bound only after all bone world matrices have been updated.
  */
 export function buildProceduralSkeleton(model) {
   model.updateMatrixWorld(true);
+
+  // Calculate bounds in model-local coordinates, not world coordinates.
   const worldBox = new THREE.Box3().setFromObject(model);
   const inverseRoot = model.matrixWorld.clone().invert();
   const corners = [];
-  for (const xx of [worldBox.min.x,worldBox.max.x]) for (const yy of [worldBox.min.y,worldBox.max.y]) for (const zz of [worldBox.min.z,worldBox.max.z]) corners.push(new THREE.Vector3(xx,yy,zz).applyMatrix4(inverseRoot));
+  for (const xx of [worldBox.min.x, worldBox.max.x]) {
+    for (const yy of [worldBox.min.y, worldBox.max.y]) {
+      for (const zz of [worldBox.min.z, worldBox.max.z]) {
+        corners.push(new THREE.Vector3(xx, yy, zz).applyMatrix4(inverseRoot));
+      }
+    }
+  }
   const box = new THREE.Box3().setFromPoints(corners);
   const size = box.getSize(new THREE.Vector3());
   const center = box.getCenter(new THREE.Vector3());
-  const H = Math.max(size.y, 0.001), W = Math.max(size.x, H * 0.25), D = Math.max(size.z, H * 0.2);
-  const x = W * 0.28, y = box.min.y, z = center.z;
-  const point = (px, py, pz=z) => new THREE.Vector3(px, py, pz);
-  const root = new THREE.Bone(); root.name='TCS_Root'; root.position.copy(point(center.x,y,z)); model.add(root);
-  const bones=[], positions=[];
-  const addChain=(parent, specs)=>{
-    let p=parent;
-    for(const [name,px,py,pz] of specs){
-      const b=new THREE.Bone();b.name=name;b.position.copy(point(px,py,pz).sub(p===root?root.position: new THREE.Vector3(0,0,0)));
-      // Bone child positions are relative to parent; specs are model-space points.
-      if(p!==root){const wp=p.getWorldPosition(new THREE.Vector3());b.position.copy(point(px,py,pz).sub(wp));}
-      p.add(b);bones.push(b);positions.push(point(px,py,pz));p=b;
+  const H = Math.max(size.y, 0.001);
+  const W = Math.max(size.x, H * 0.25);
+  const D = Math.max(size.z, H * 0.2);
+  const y = box.min.y;
+  const z = center.z;
+  const point = (px, py, pz = z) => new THREE.Vector3(px, py, pz);
+
+  const root = new THREE.Bone();
+  root.name = 'TCS_Root';
+  root.position.copy(point(center.x, y, z));
+  model.add(root);
+
+  const bones = [];
+  const positions = [];
+  const addChain = (parent, specs) => {
+    let current = parent;
+    let parentPoint = parent === root ? root.position.clone() : null;
+    for (const [name, px, py, pz] of specs) {
+      const absolute = point(px, py, pz);
+      const bone = new THREE.Bone();
+      bone.name = name;
+      bone.position.copy(absolute.sub(parentPoint || current.getWorldPosition(new THREE.Vector3())));
+      current.add(bone);
+      bones.push(bone);
+      positions.push(point(px, py, pz));
+      current = bone;
+      parentPoint = point(px, py, pz);
     }
-    return p;
+    return current;
   };
-  // Root's coordinate space begins at model bounding-box bottom-center.
-  addChain(root,[['Pelvis',center.x,y+H*.48,z],['Spine',center.x,y+H*.62,z],['Chest',center.x,y+H*.72,z],['Neck',center.x,y+H*.82,z],['Head',center.x,y+H*.94,z]]);
-  for(const side of [-1,1]){
-    const s=side<0?'L':'R',sx=center.x+side*x;
-    addChain(root,[['Shoulder_'+s,sx,y+H*.73,z],['UpperArm_'+s,sx+side*W*.10,y+H*.64,z],['Forearm_'+s,sx+side*W*.17,y+H*.54,z],['Hand_'+s,sx+side*W*.20,y+H*.48,z]]);
-    addChain(root,[['Hip_'+s,center.x+side*W*.11,y+H*.47,z],['Thigh_'+s,center.x+side*W*.13,y+H*.30,z],['Knee_'+s,center.x+side*W*.14,y+H*.16,z],['Ankle_'+s,center.x+side*W*.14,y+H*.05,z],['Foot_'+s,center.x+side*W*.14,y+H*.025,z+D*.18]]);
+
+  // Central torso chain.
+  addChain(root, [
+    ['Pelvis', center.x, y + H * 0.48, z],
+    ['Spine', center.x, y + H * 0.61, z],
+    ['Chest', center.x, y + H * 0.72, z],
+    ['Neck', center.x, y + H * 0.83, z],
+    ['Head', center.x, y + H * 0.94, z]
+  ]);
+
+  for (const side of [-1, 1]) {
+    const suffix = side < 0 ? 'L' : 'R';
+    const shoulderX = center.x + side * W * 0.105;
+    const shoulderY = y + H * 0.72;
+
+    // Horizontal rest pose: shoulder -> upper arm -> forearm -> hand.
+    addChain(root, [
+      ['Shoulder_' + suffix, shoulderX, shoulderY, z],
+      ['UpperArm_' + suffix, center.x + side * W * 0.235, shoulderY, z],
+      ['Forearm_' + suffix, center.x + side * W * 0.355, shoulderY, z],
+      ['Hand_' + suffix, center.x + side * W * 0.435, shoulderY, z]
+    ]);
+
+    // Legs stay straight in the neutral pose, with feet above the floor.
+    addChain(root, [
+      ['Hip_' + suffix, center.x + side * W * 0.105, y + H * 0.47, z],
+      ['Thigh_' + suffix, center.x + side * W * 0.115, y + H * 0.30, z],
+      ['Knee_' + suffix, center.x + side * W * 0.12, y + H * 0.16, z],
+      ['Ankle_' + suffix, center.x + side * W * 0.12, y + H * 0.055, z],
+      ['Foot_' + suffix, center.x + side * W * 0.12, y + H * 0.025, z + D * 0.18]
+    ]);
   }
-  const skel=new THREE.Skeleton(bones);
-  const inverseModel=model.matrixWorld.clone().invert();
-  const skinned=[];
-  model.traverse(mesh=>{
-    if(!mesh.isMesh || mesh.isSkinnedMesh || !mesh.geometry?.attributes?.position)return;
-    const geo=mesh.geometry.clone(),pos=geo.attributes.position,idx=new Uint16Array(pos.count*4),weights=new Float32Array(pos.count*4);
+
+  // Ensure the bind pose is fully propagated before calculating inverse binds.
+  model.updateMatrixWorld(true);
+  root.updateMatrixWorld(true);
+  const skeleton = new THREE.Skeleton(bones);
+  skeleton.calculateInverses();
+  const inverseModel = model.matrixWorld.clone().invert();
+  const skinnedMeshes = [];
+
+  model.traverse(mesh => {
+    if (!mesh.isMesh || mesh.isSkinnedMesh || !mesh.geometry?.attributes?.position) return;
+
     mesh.updateMatrixWorld(true);
-    const toModel=inverseModel.clone().multiply(mesh.matrixWorld);
-    for(let i=0;i<pos.count;i++){
-      const v=new THREE.Vector3(pos.getX(i),pos.getY(i),pos.getZ(i)).applyMatrix4(toModel);
-      const distances=bones.map((b,j)=>{const bp=positions[j];return Math.max(.025,v.distanceTo(bp));});
-      const nearest=distances.map((d,j)=>({j,d})).sort((a,b)=>a.d-b.d).slice(0,4);
-      let total=0;nearest.forEach(a=>total+=1/(a.d*a.d));
-      nearest.forEach((a,k)=>{idx[i*4+k]=a.j;weights[i*4+k]=(1/(a.d*a.d))/total;});
+    const geometry = mesh.geometry.clone();
+    const position = geometry.attributes.position;
+    const skinIndex = new Uint16Array(position.count * 4);
+    const skinWeight = new Float32Array(position.count * 4);
+    const meshToModel = inverseModel.clone().multiply(mesh.matrixWorld);
+
+    for (let i = 0; i < position.count; i++) {
+      const vertex = new THREE.Vector3(
+        position.getX(i),
+        position.getY(i),
+        position.getZ(i)
+      ).applyMatrix4(meshToModel);
+
+      const nearest = bones.map((bone, index) => ({
+        index,
+        distance: Math.max(0.035, vertex.distanceTo(positions[index]))
+      })).sort((a, b) => a.distance - b.distance).slice(0, 4);
+
+      let total = 0;
+      for (const item of nearest) total += 1 / (item.distance * item.distance);
+      nearest.forEach((item, slot) => {
+        skinIndex[i * 4 + slot] = item.index;
+        skinWeight[i * 4 + slot] = (1 / (item.distance * item.distance)) / total;
+      });
     }
-    geo.setAttribute('skinIndex',new THREE.Uint16BufferAttribute(idx,4));
-    geo.setAttribute('skinWeight',new THREE.Float32BufferAttribute(weights,4));
-    const sm=new THREE.SkinnedMesh(geo,mesh.material);sm.name=mesh.name;sm.position.copy(mesh.position);sm.quaternion.copy(mesh.quaternion);sm.scale.copy(mesh.scale);sm.matrix.copy(mesh.matrix);sm.matrixAutoUpdate=mesh.matrixAutoUpdate;sm.bind(skel);
-    mesh.parent.add(sm);mesh.visible=false;skinned.push(sm);
+
+    geometry.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(skinIndex, 4));
+    geometry.setAttribute('skinWeight', new THREE.Float32BufferAttribute(skinWeight, 4));
+
+    const skinned = new THREE.SkinnedMesh(geometry, mesh.material);
+    skinned.name = mesh.name;
+    skinned.position.copy(mesh.position);
+    skinned.quaternion.copy(mesh.quaternion);
+    skinned.scale.copy(mesh.scale);
+    skinned.matrix.copy(mesh.matrix);
+    skinned.matrixAutoUpdate = mesh.matrixAutoUpdate;
+    mesh.parent.add(skinned);
+    skinned.updateMatrixWorld(true);
+    skinned.bind(skeleton, skinned.matrixWorld.clone());
+
+    mesh.visible = false;
+    skinnedMeshes.push(skinned);
   });
-  return {root,bones,skeleton:skel,skinnedMeshes:skinned,generated:true};
+
+  return { root, bones, skeleton, skinnedMeshes, generated: true, restPose: 'T-pose' };
 }
