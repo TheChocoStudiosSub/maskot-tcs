@@ -171,6 +171,14 @@ export function discoverRig(model) {
   }
 
   model.updateWorldMatrix(true, true);
+  model.updateWorldMatrix(true, true);
+  const finalMeshSet = new Set();
+  root.traverse(object => { if (object.isMesh) finalMeshSet.add(object); });
+  const stillMissing = meshes.filter(mesh => !finalMeshSet.has(mesh));
+  if (stillMissing.length) {
+    throw new Error(`Rig audit failed: ${stillMissing.length} GLB mesh(es) are outside the rig hierarchy.`);
+  }
+
   const legBox = union(buckets.legs, worldBounds);
   const armBox = union(buckets.arms, worldBounds);
   const measure = Object.freeze({
