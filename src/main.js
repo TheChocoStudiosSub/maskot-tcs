@@ -53,7 +53,7 @@ function animateRig(dt,t){
 }
 function loadGLB(){
  const loader=new GLTFLoader();
- loader.load('/TCS_Mascot_3D.glb',gltf=>{
+ loader.load('https://cdn.jsdelivr.net/gh/TheChocoStudiosSub/maskot-tcs@main/TCS_Mascot_3D.glb',gltf=>{
   const model=gltf.scene;state.model=model;scene.add(model);
   const box=new THREE.Box3().setFromObject(model),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());
   const max=Math.max(size.x,size.y,size.z)||1;const scale=2.9/max;model.scale.setScalar(scale);model.position.set(-center.x*scale,-box.min.y*scale, -center.z*scale);state.baseY=model.position.y;
