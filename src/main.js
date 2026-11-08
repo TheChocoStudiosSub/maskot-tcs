@@ -71,7 +71,7 @@ function setCamera(position) {
 function loadMascot() {
   const loader = new GLTFLoader();
   loader.load(
-    'https://cdn.jsdelivr.net/gh/TheChocoStudiosSub/maskot-tcs@main/TCS_Mascot_3D.glb',
+    'https://cdn.jsdelivr.net/gh/TheChocoStudiosSub/maskot-tcs@main/TCS_Mascot_3D.glb?v=tail-hanging-01',
     (gltf) => {
       try {
         const model = gltf.scene;
