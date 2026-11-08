@@ -1,2 +1,1 @@
-import {lerpRotation,pulse} from './rig.js';
-export function animateWave(rig,t,k){rig.arms.forEach((o,i)=>{const b=rig.base.get(o);const side=/left|l_|\.l| kiri/.test(o.name.toLowerCase())?-1:1;const target=(b?.rotation.z||0)+(side>0?-.95+pulse(t,7.5)*.42:.08);lerpRotation(o,'z',target,k);lerpRotation(o,'x',(b?.rotation.x||0)+(side>0?pulse(t,7.5)*.35:0),k);});rig.head.forEach(o=>lerpRotation(o,'z',pulse(t,2)*.08,k));}
+export { getPose } from './motions/wave.js';
