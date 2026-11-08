@@ -78,7 +78,7 @@ document.querySelector('#resetCharacter').onclick=()=>{setMotion('idle');setExpr
 const resize=()=>{const w=Math.max(1,stage.clientWidth),h=Math.max(1,stage.clientHeight);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)};const observer=new ResizeObserver(resize);observer.observe(stage);resize();
 loadGLB();
 let previous=0,raf=0,disposed=false;
-function frame(ms){if(disposed||document.hidden)return;raf=requestAnimationFrame(frame);const t=ms/1000,dt=Math.min(.05,(ms-previous)/1000||0);previous=ms;state.elapsed+=dt;if(state.model&&state.rig&&state.autoRotate){state.autoAngle+=dt*.45;state.model.rotation.y=state.rig.baseModelRotation?.y??state.model.rotation.y;state.model.rotation.y+=state.autoAngle;}if(state.blink&&state.expression!=='wink'){state.blinkTime+=dt;if(state.blinkTime>state.nextBlink){state.blinkTime=0;state.nextBlink=2.2+Math.random()*2.4;}}controls.update();renderer.render(scene,camera);}
+function frame(ms){if(disposed||document.hidden)return;raf=requestAnimationFrame(frame);const t=ms/1000,dt=Math.min(.05,(ms-previous)/1000||0);previous=ms;state.elapsed+=dt;if(state.model&&state.rig&&state.autoRotate){state.autoAngle+=dt*.45;state.model.rotation.y+=dt*.45;}if(state.blink&&state.expression!=='wink'){state.blinkTime+=dt;if(state.blinkTime>state.nextBlink){state.blinkTime=0;state.nextBlink=2.2+Math.random()*2.4;}}controls.update();renderer.render(scene,camera);}
 raf=requestAnimationFrame(frame);
 renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();cancelAnimationFrame(raf);status('KONTEKS WEBGL TERPUTUS')});
 renderer.domElement.addEventListener('webglcontextrestored',()=>{previous=0;status('WEBGL DIPULIHKAN');raf=requestAnimationFrame(frame)});
