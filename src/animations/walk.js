@@ -1,2 +1,1 @@
-import {lerpRotation,pulse} from './rig.js';
-export function animateWalk(model,rig,t,k){model.position.y+=Math.abs(pulse(t,7.2))*.04;rig.legs.forEach((o,i)=>{const b=rig.base.get(o);lerpRotation(o,'x',(b?.rotation.x||0)+pulse(t,7.2,i*Math.PI)*.55,k);});rig.arms.forEach((o,i)=>{const b=rig.base.get(o);lerpRotation(o,'x',(b?.rotation.x||0)+pulse(t,7.2,i*Math.PI+Math.PI)*.3,k);});rig.body.forEach(o=>lerpRotation(o,'z',pulse(t,7.2)*.025,k));}
+export { getPose } from './motions/walk.js';
