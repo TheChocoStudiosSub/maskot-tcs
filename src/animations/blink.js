@@ -1,2 +1,1 @@
-export function blinkEyes(rig,amount){rig.eyes.forEach(o=>{const base=rig.base.get(o);if(base)o.scale.y=base.scale.y*(1-amount*.88);});}
-export function animateBlink(rig,elapsed,expression='happy'){if(expression==='wink'){rig.eyes.forEach((o,i)=>{const b=rig.base.get(o);if(b)o.scale.y=b.scale.y*(i===0?.12:1);});return;}const cycle=elapsed%3.7;const amount=cycle<.12?Math.sin(cycle/.12*Math.PI):0;blinkEyes(rig,amount);}
+export { getBlinkAmount } from './motions/blink.js';
