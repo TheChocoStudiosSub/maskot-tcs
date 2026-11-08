@@ -1,29 +1,84 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
-import {createMascot,setExpression,setPose,animateMascot,blinkMascot} from './mascot.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import './style.css';
-const stage=document.querySelector('#stage');
-const scene=new THREE.Scene();scene.background=new THREE.Color('#080d2b');scene.fog=new THREE.Fog('#080d2b',8,18);
-const camera=new THREE.PerspectiveCamera(34,1,.1,60);camera.position.set(0,2.1,7.7);
-const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'low-power'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.2;stage.prepend(renderer.domElement);
-const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.07;controls.minDistance=4.4;controls.maxDistance=11;controls.target.set(0,.85,0);controls.maxPolarAngle=Math.PI*.82;
-scene.add(new THREE.HemisphereLight('#cbd6ff','#25204e',2.1));const key=new THREE.DirectionalLight('#fff4ff',3.1);key.position.set(3,6,5);key.castShadow=true;key.shadow.mapSize.set(1024,1024);key.shadow.camera.left=-4;key.shadow.camera.right=4;key.shadow.camera.top=5;key.shadow.camera.bottom=-4;scene.add(key);const rim=new THREE.PointLight('#685cff',22,9);rim.position.set(-3,2,-3);scene.add(rim);const fill=new THREE.PointLight('#48aaff',8,8);fill.position.set(3,1,3);scene.add(fill);
-const floor=new THREE.Mesh(new THREE.CircleGeometry(7,64),new THREE.MeshStandardMaterial({color:'#101b4c',roughness:.85}));floor.rotation.x=-Math.PI/2;floor.position.y=-.85;floor.receiveShadow=true;scene.add(floor);
-const mascot=createMascot();mascot.root.position.y=-.08;scene.add(mascot.root);setExpression(mascot,'happy');setPose(mascot,'idle');
-const state={expression:'happy',pose:'idle',blink:true,idle:true,rotate:false,blinkValue:1,nextBlink:2.5,blinkPhase:0};
-const resize=()=>{const w=stage.clientWidth,h=stage.clientHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)};new ResizeObserver(resize).observe(stage);resize();
-function setStatus(s){document.querySelector('#statusText').textContent=s}
-function activate(selector,attr,value){document.querySelectorAll(selector).forEach(b=>b.classList.toggle('active',b.dataset[attr]===value))}
-document.querySelectorAll('[data-expression]').forEach(b=>b.addEventListener('click',()=>{state.expression=b.dataset.expression;setExpression(mascot,state.expression);activate('[data-expression]','expression',state.expression);setStatus('EXPRESSION: '+state.expression.toUpperCase())}));
-document.querySelectorAll('[data-pose]').forEach(b=>b.addEventListener('click',()=>{state.pose=b.dataset.pose;setPose(mascot,state.pose);activate('[data-pose]','pose',state.pose);setStatus('POSE: '+state.pose.toUpperCase())}));
-document.querySelector('#blinkToggle').addEventListener('change',e=>{state.blink=e.target.checked;if(!state.blink)blinkMascot(mascot,1);setStatus(state.blink?'AUTO BLINK ON':'AUTO BLINK OFF')});
-document.querySelector('#idleToggle').addEventListener('change',e=>state.idle=e.target.checked);
-document.querySelector('#rotateToggle').addEventListener('change',e=>{state.rotate=e.target.checked;controls.enabled=!state.rotate});
+
+const stage=document.querySelector('#stage'),loading=document.querySelector('#loading');
+const scene=new THREE.Scene();scene.background=new THREE.Color('#080d2b');scene.fog=new THREE.Fog('#080d2b',10,24);
+const camera=new THREE.PerspectiveCamera(34,1,.1,80);camera.position.set(0,2.15,7.8);
+const renderer=new THREE.WebGLRenderer({antialias:false,alpha:false,powerPreference:'low-power',stencil:false});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.25));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;renderer.shadowMap.enabled=false;stage.prepend(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.075;controls.minDistance=3;controls.maxDistance=16;controls.maxPolarAngle=Math.PI*.84;
+scene.add(new THREE.HemisphereLight('#d7ddff','#25204e',2.0));
+const key=new THREE.DirectionalLight('#fff4ff',2.7);key.position.set(3,6,5);scene.add(key);
+const rim=new THREE.PointLight('#685cff',17,11);rim.position.set(-3,2,-3);scene.add(rim);
+const fill=new THREE.PointLight('#48aaff',6,9);fill.position.set(3,1,3);scene.add(fill);
+const floor=new THREE.Mesh(new THREE.CircleGeometry(8,40),new THREE.MeshStandardMaterial({color:'#101b4c',roughness:.9}));floor.rotation.x=-Math.PI/2;floor.position.y=-.03;scene.add(floor);
+const state={motion:'idle',expression:'happy',blink:true,autoRotate:false,elapsed:0,model:null,mixer:null,clips:[],parts:{arms:[],legs:[],head:[],tail:[],body:[]},baseY:0,baseRot:new THREE.Euler(),blinkTime:0,nextBlink:2.5};
+function status(s){const el=document.querySelector('#statusText');if(el)el.textContent=s}
+function activate(sel,key,value){document.querySelectorAll(sel).forEach(b=>b.classList.toggle('active',b.dataset[key]===value))}
+function cameraAt(p){camera.position.set(...p);controls.target.set(0,.95,0);controls.update()}
+function findParts(root){
+ const p=state.parts;
+ root.traverse(o=>{if(!o.isBone&&!o.isGroup)return;const n=o.name.toLowerCase();
+ if(/arm|hand|wrist|shoulder|forearm|lengan|tangan/.test(n))p.arms.push(o);
+ if(/leg|foot|feet|thigh|knee|kaki/.test(n))p.legs.push(o);
+ if(/head|kepala/.test(n))p.head.push(o);
+ if(/tail|ekor/.test(n))p.tail.push(o);
+ if(/body|torso|chest|spine|badan/.test(n))p.body.push(o);
+ });
+}
+function setMotion(name){state.motion=name;state.elapsed=0;activate('[data-motion]','motion',name);if(state.mixer)state.mixer.stopAllAction();status('ANIMASI: '+name.toUpperCase());}
+function setExpression(name){
+ state.expression=name;activate('[data-expression]','expression',name);
+ const presets={happy:{blink:1,mouth:0},wink:{blink:.22,mouth:0},surprised:{blink:1,mouth:1},sleepy:{blink:.55,mouth:0},angry:{blink:.8,mouth:0},sad:{blink:.9,mouth:0}};
+ const preset=presets[name]||presets.happy;state.parts.face?.forEach(x=>{});
+ if(state.model){state.model.traverse(o=>{if(!o.isMesh||!o.morphTargetDictionary||!o.morphTargetInfluences)return;for(const [key,index] of Object.entries(o.morphTargetDictionary)){const k=key.toLowerCase();if(/blink|eye.?close/.test(k))o.morphTargetInfluences[index]=name==='wink'?.9:name==='sleepy'?.45:0;if(/mouth.?open|jaw.?open/.test(k))o.morphTargetInfluences[index]=preset.mouth;if(/smile|happy/.test(k))o.morphTargetInfluences[index]=name==='happy'?.8:0;if(/sad|frown/.test(k))o.morphTargetInfluences[index]=name==='sad'?.8:0;if(/angry/.test(k))o.morphTargetInfluences[index]=name==='angry'?.8:0;} });}
+ status('EKSPRESI: '+name.toUpperCase());
+}
+function animateRig(dt,t){
+ const {arms,legs,head,tail,body}=state.parts;const smooth=1-Math.exp(-dt*8);
+ if(state.mixer)state.mixer.update(dt);
+ const bob=Math.sin(t*2.2)*.018;
+ state.model.position.y=THREE.MathUtils.damp(state.model.position.y,state.baseY+(state.motion==='jump'?Math.max(0,Math.sin(state.elapsed*Math.PI*1.4))*.8:state.motion==='walk'?Math.abs(Math.sin(t*8))*.045:state.motion==='idle'?bob:0),dt,7);
+ const walking=state.motion==='walk',sitting=state.motion==='sit',waving=state.motion==='wave',cheering=state.motion==='cheer';
+ if(state.motion==='jump')state.model.rotation.z=Math.sin(state.elapsed*3)*.025;
+ else state.model.rotation.z=THREE.MathUtils.damp(state.model.rotation.z,0,dt,6);
+ if(head.length)head.forEach((o,i)=>{o.rotation.z+=(Math.sin(t*1.3)*.018-o.rotation.z)*smooth});
+ if(tail.length)tail.forEach(o=>{o.rotation.x+=(Math.sin(t*3)*.13-o.rotation.x)*smooth;o.rotation.z+=(Math.sin(t*2)*.09-o.rotation.z)*smooth});
+ if(arms.length){arms.forEach((o,i)=>{const side=i%2===0?-1:1;let target=0;if(waving&&side>0)target=Math.sin(state.elapsed*8)*.75-1.05;else if(cheering)target=side*.95;else if(walking)target=Math.sin(t*8+ i*Math.PI)*.45; o.rotation.z+=(target-o.rotation.z)*smooth;});}
+ if(legs.length){legs.forEach((o,i)=>{const side=i%2===0?-1:1;let target=walking?Math.sin(t*8+i*Math.PI)*.48:sitting?-.95:0;o.rotation.x+=(target-o.rotation.x)*smooth;o.rotation.z+=(sitting?side*.18:0-o.rotation.z)*smooth;});}
+ if(body.length)body.forEach(o=>{const target=sitting?.22:walking?Math.sin(t*8)*.025:0;o.rotation.x+=(target-o.rotation.x)*smooth;});
+ if(state.autoRotate)state.model.rotation.y+=dt*.45;
+}
+function loadGLB(){
+ const loader=new GLTFLoader();
+ loader.load('/TCS_Mascot_3D.glb',gltf=>{
+  const model=gltf.scene;state.model=model;scene.add(model);
+  const box=new THREE.Box3().setFromObject(model),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());
+  const max=Math.max(size.x,size.y,size.z)||1;const scale=2.9/max;model.scale.setScalar(scale);model.position.set(-center.x*scale,-box.min.y*scale, -center.z*scale);state.baseY=model.position.y;
+  model.traverse(o=>{if(o.isMesh){o.frustumCulled=true;if(o.material){o.material.side=THREE.FrontSide;if('roughness' in o.material)o.material.roughness=Math.max(.35,o.material.roughness??.7);}}});
+  findParts(model);state.clips=gltf.animations||[];if(state.clips.length){state.mixer=new THREE.AnimationMixer(model);const clip=state.clips.find(c=>/idle/i.test(c.name))||state.clips[0];state.mixer.clipAction(clip).play();}
+  controls.target.set(0,1.25,0);camera.position.set(0,2.15,7.8);controls.update();
+  const rig=document.querySelector('#rigInfo');const count=state.parts.arms.length+state.parts.legs.length+state.parts.head.length+state.parts.tail.length+state.parts.body.length;
+  rig.textContent=state.clips.length+' klip animasi GLB · '+count+' node rig terdeteksi. '+(count?'Kontrol gerak menggerakkan node model yang tersedia.':'Model ini belum memiliki tulang/nama node anggota tubuh; gerakan seluruh badan tetap dapat diuji, sedangkan gerak tangan/kaki independen memerlukan rigging GLB.');
+  loading?.remove();status('GLB DIMUAT · '+(state.clips.length?'ANIMASI TERTANAM':'MODE KONTROL 3D'));
+ },undefined,error=>{console.error(error);loading.textContent='Model GLB gagal dimuat. Periksa file TCS_Mascot_3D.glb di repositori.';status('GAGAL MEMUAT GLB');});
+}
+document.querySelectorAll('[data-expression]').forEach(b=>b.addEventListener('click',()=>setExpression(b.dataset.expression)));
+document.querySelectorAll('[data-motion]').forEach(b=>b.addEventListener('click',()=>setMotion(b.dataset.motion)));
+document.querySelector('#blinkToggle').addEventListener('change',e=>{state.blink=e.target.checked;status(state.blink?'KEDIP OTOMATIS AKTIF':'KEDIP OTOMATIS NONAKTIF')});
+document.querySelector('#idleToggle').addEventListener('change',e=>{if(e.target.checked&&state.motion==='idle')status('GERAKAN IDLE AKTIF')});
+document.querySelector('#rotateToggle').addEventListener('change',e=>{state.autoRotate=e.target.checked;controls.enabled=!state.autoRotate});
 document.querySelector('#bgColor').addEventListener('input',e=>{scene.background.set(e.target.value);scene.fog.color.set(e.target.value)});
-document.querySelector('#frontView').onclick=()=>moveCamera([0,2.1,7.7]);document.querySelector('#sideView').onclick=()=>moveCamera([7.7,2.1,0]);document.querySelector('#backView').onclick=()=>moveCamera([0,2.1,-7.7]);
-function moveCamera(p){camera.position.set(...p);controls.target.set(0,.85,0);controls.update()}
-document.querySelector('#resetView').onclick=()=>{moveCamera([0,2.1,7.7]);controls.reset()};
-document.querySelector('#resetCharacter').onclick=()=>{state.expression='happy';state.pose='idle';state.blink=true;state.idle=true;state.rotate=false;document.querySelector('#blinkToggle').checked=true;document.querySelector('#idleToggle').checked=true;document.querySelector('#rotateToggle').checked=false;setExpression(mascot,'happy');setPose(mascot,'idle');activate('[data-expression]','expression','happy');activate('[data-pose]','pose','idle');setStatus('STANDBY')};
-let last=0;function frame(ms){requestAnimationFrame(frame);const t=ms/1000,dt=Math.min((ms-last)/1000,.05);last=ms;animateMascot(mascot,t,{idle:state.idle,rotate:state.rotate});if(state.blink){if(state.blinkPhase===0&&t>state.nextBlink){state.blinkPhase=1;state.blinkStart=t}if(state.blinkPhase===1){const q=(t-state.blinkStart)/.12;state.blinkValue=q<.5?1-q*2:(q-0.5)*2;state.blinkValue=Math.max(.08,Math.min(1,state.blinkValue));blinkMascot(mascot,state.blinkValue);if(q>=1){state.blinkPhase=0;state.nextBlink=t+2.2+Math.random()*2.5;state.blinkValue=1}}}controls.update();renderer.render(scene,camera)}
-requestAnimationFrame(frame);document.querySelector('#loading').remove();setStatus('READY · INTERACTIVE');
-window.addEventListener('beforeunload',()=>{renderer.dispose();controls.dispose()});
+document.querySelector('#frontView').onclick=()=>cameraAt([0,2.15,7.8]);document.querySelector('#sideView').onclick=()=>cameraAt([7.8,2.15,0]);document.querySelector('#backView').onclick=()=>cameraAt([0,2.15,-7.8]);document.querySelector('#resetView').onclick=()=>cameraAt([0,2.15,7.8]);
+document.querySelector('#resetCharacter').onclick=()=>{setMotion('idle');setExpression('happy');state.blink=true;state.autoRotate=false;document.querySelector('#blinkToggle').checked=true;document.querySelector('#rotateToggle').checked=false;controls.enabled=true;};
+const resize=()=>{const w=Math.max(1,stage.clientWidth),h=Math.max(1,stage.clientHeight);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)};const observer=new ResizeObserver(resize);observer.observe(stage);resize();
+loadGLB();
+let previous=0,raf=0,disposed=false;
+function frame(ms){if(disposed||document.hidden)return;raf=requestAnimationFrame(frame);const t=ms/1000,dt=Math.min(.05,(ms-previous)/1000||0);previous=ms;state.elapsed+=dt;if(state.model)animateRig(dt,t);if(state.blink&&state.expression!=='wink'){state.blinkTime+=dt;if(state.blinkTime>state.nextBlink){state.blinkTime=0;state.nextBlink=2.2+Math.random()*2.4;}}controls.update();renderer.render(scene,camera);}
+raf=requestAnimationFrame(frame);
+renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();cancelAnimationFrame(raf);status('KONTEKS WEBGL TERPUTUS')});
+renderer.domElement.addEventListener('webglcontextrestored',()=>{previous=0;status('WEBGL DIPULIHKAN');raf=requestAnimationFrame(frame)});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelAnimationFrame(raf);else{previous=0;raf=requestAnimationFrame(frame)}});
+window.addEventListener('beforeunload',()=>{disposed=true;cancelAnimationFrame(raf);observer.disconnect();controls.dispose();renderer.dispose();});
