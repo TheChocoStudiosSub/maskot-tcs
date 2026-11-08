@@ -3,8 +3,8 @@ import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import './style.css';
 import {discoverRig} from './animations/rig.js';
-import {tickCharacter} from './animations/controller.js';
-import {buildProceduralSkeleton} from './animations/procedural-skeleton.js';
+import {mountRigDebug} from '../debug.js';
+import {CONFIG} from '../config.js';
 
 const stage=document.querySelector('#stage'),loading=document.querySelector('#loading');
 const scene=new THREE.Scene();scene.background=new THREE.Color('#080d2b');scene.fog=new THREE.Fog('#080d2b',10,24);
@@ -59,12 +59,11 @@ function loadGLB(){
  loader.load('https://cdn.jsdelivr.net/gh/TheChocoStudiosSub/maskot-tcs@main/TCS_Mascot_3D.glb',gltf=>{
   const model=gltf.scene;state.model=model;scene.add(model);
   const box=new THREE.Box3().setFromObject(model),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());
-  const max=Math.max(size.x,size.y,size.z)||1;const scale=2.9/max;model.scale.setScalar(scale);model.position.set(-center.x*scale,-box.min.y*scale, -center.z*scale);state.baseY=model.position.y;
+  const max=Math.max(size.x,size.y,size.z)||1;const scale=CONFIG.model.maxDisplaySize/max;model.scale.setScalar(scale);model.position.set(-center.x*scale,-box.min.y*scale, -center.z*scale);state.baseY=model.position.y;
   model.traverse(o=>{if(o.isMesh){o.frustumCulled=true;if(o.material){o.material.side=THREE.FrontSide;if('roughness' in o.material)o.material.roughness=Math.max(.35,o.material.roughness??.7);}}});
-  state.proceduralArmature=buildProceduralSkeleton(model);state.rig=discoverRig(model);state.clips=gltf.animations||[];state.mixer=null;
+  state.rig=discoverRig(model);mountRigDebug(state.rig);state.clips=gltf.animations||[];state.mixer=null;
   controls.target.set(0,1.25,0);camera.position.set(0,2.15,7.8);controls.update();
-  const rig=document.querySelector('#rigInfo');const count=state.rig.arms.length+state.rig.legs.length+state.rig.head.length+state.rig.tail.length+state.rig.body.length;const eyeCount=state.rig.eyes.length;
-  rig.textContent='Armature prosedural aktif: '+state.proceduralArmature.bones.length+' tulang · '+state.proceduralArmature.skinnedMeshes.length+' mesh ter-skinning. Rig otomatis berbasis proporsi GLB; hasil deformasi bergantung pada bentuk mesh.';
+  const rig=document.querySelector('#rigInfo');rig.textContent='Rigid pivot aktif: '+state.rig.pivots.length+' pivot · '+state.rig.meshCount+' mesh. Tinggi '+state.rig.measure.height.toFixed(3)+' · panjang kaki '+state.rig.measure.legLength.toFixed(3)+' · panjang lengan '+state.rig.measure.armLength.toFixed(3)+'.';
   loading?.remove();status('GLB DIMUAT · '+(state.clips.length?'ANIMASI TERTANAM':'MODE KONTROL 3D'));
  },undefined,error=>{console.error(error);loading.textContent='Model GLB gagal dimuat. Periksa file TCS_Mascot_3D.glb di repositori.';status('GAGAL MEMUAT GLB');});
 }
@@ -79,7 +78,7 @@ document.querySelector('#resetCharacter').onclick=()=>{setMotion('idle');setExpr
 const resize=()=>{const w=Math.max(1,stage.clientWidth),h=Math.max(1,stage.clientHeight);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)};const observer=new ResizeObserver(resize);observer.observe(stage);resize();
 loadGLB();
 let previous=0,raf=0,disposed=false;
-function frame(ms){if(disposed||document.hidden)return;raf=requestAnimationFrame(frame);const t=ms/1000,dt=Math.min(.05,(ms-previous)/1000||0);previous=ms;state.elapsed+=dt;if(state.model&&state.rig){tickCharacter(state.model,state.rig,state.motion,state.expression,state.elapsed,dt,state.blink);if(state.autoRotate)state.model.rotation.y+=dt*.45;}if(state.blink&&state.expression!=='wink'){state.blinkTime+=dt;if(state.blinkTime>state.nextBlink){state.blinkTime=0;state.nextBlink=2.2+Math.random()*2.4;}}controls.update();renderer.render(scene,camera);}
+function frame(ms){if(disposed||document.hidden)return;raf=requestAnimationFrame(frame);const t=ms/1000,dt=Math.min(.05,(ms-previous)/1000||0);previous=ms;state.elapsed+=dt;if(state.model&&state.rig&&state.autoRotate){state.autoAngle+=dt*.45;state.model.rotation.y=state.rig.baseModelRotation?.y??state.model.rotation.y;state.model.rotation.y+=state.autoAngle;}if(state.blink&&state.expression!=='wink'){state.blinkTime+=dt;if(state.blinkTime>state.nextBlink){state.blinkTime=0;state.nextBlink=2.2+Math.random()*2.4;}}controls.update();renderer.render(scene,camera);}
 raf=requestAnimationFrame(frame);
 renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();cancelAnimationFrame(raf);status('KONTEKS WEBGL TERPUTUS')});
 renderer.domElement.addEventListener('webglcontextrestored',()=>{previous=0;status('WEBGL DIPULIHKAN');raf=requestAnimationFrame(frame)});
