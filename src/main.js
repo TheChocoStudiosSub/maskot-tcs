@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import './style.css';
+import {discoverRig} from './animations/rig.js';
+import {tickCharacter} from './animations/controller.js';
 
 const stage=document.querySelector('#stage'),loading=document.querySelector('#loading');
 const scene=new THREE.Scene();scene.background=new THREE.Color('#080d2b');scene.fog=new THREE.Fog('#080d2b',10,24);
@@ -14,7 +16,7 @@ const key=new THREE.DirectionalLight('#fff4ff',2.7);key.position.set(3,6,5);scen
 const rim=new THREE.PointLight('#685cff',17,11);rim.position.set(-3,2,-3);scene.add(rim);
 const fill=new THREE.PointLight('#48aaff',6,9);fill.position.set(3,1,3);scene.add(fill);
 const floor=new THREE.Mesh(new THREE.CircleGeometry(8,40),new THREE.MeshStandardMaterial({color:'#101b4c',roughness:.9}));floor.rotation.x=-Math.PI/2;floor.position.y=-.03;scene.add(floor);
-const state={motion:'idle',expression:'happy',blink:true,autoRotate:false,elapsed:0,model:null,mixer:null,clips:[],activeClip:null,parts:{arms:[],legs:[],head:[],tail:[],body:[]},baseY:0,baseRot:new THREE.Euler(),blinkTime:0,nextBlink:2.5};
+const state={motion:'idle',expression:'happy',blink:true,autoRotate:false,elapsed:0,model:null,mixer:null,clips:[],activeClip:null,parts:{arms:[],legs:[],head:[],tail:[],body:[],eyes:[],face:[]},rig:null,baseY:0,baseRot:new THREE.Euler(),blinkTime:0,nextBlink:2.5};
 function status(s){const el=document.querySelector('#statusText');if(el)el.textContent=s}
 function activate(sel,key,value){document.querySelectorAll(sel).forEach(b=>b.classList.toggle('active',b.dataset[key]===value))}
 function cameraAt(p){camera.position.set(...p);controls.target.set(0,.95,0);controls.update()}
@@ -58,10 +60,10 @@ function loadGLB(){
   const box=new THREE.Box3().setFromObject(model),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());
   const max=Math.max(size.x,size.y,size.z)||1;const scale=2.9/max;model.scale.setScalar(scale);model.position.set(-center.x*scale,-box.min.y*scale, -center.z*scale);state.baseY=model.position.y;
   model.traverse(o=>{if(o.isMesh){o.frustumCulled=true;if(o.material){o.material.side=THREE.FrontSide;if('roughness' in o.material)o.material.roughness=Math.max(.35,o.material.roughness??.7);}}});
-  findParts(model);state.clips=gltf.animations||[];if(state.clips.length){state.mixer=new THREE.AnimationMixer(model);const clip=state.clips.find(c=>/idle/i.test(c.name))||state.clips[0];state.mixer.clipAction(clip).play();}
+  state.rig=discoverRig(model);state.clips=gltf.animations||[];state.mixer=null;
   controls.target.set(0,1.25,0);camera.position.set(0,2.15,7.8);controls.update();
-  const rig=document.querySelector('#rigInfo');const count=state.parts.arms.length+state.parts.legs.length+state.parts.head.length+state.parts.tail.length+state.parts.body.length;
-  rig.textContent=state.clips.length+' klip animasi GLB · '+count+' node bagian tubuh terdeteksi. '+(count?'Gerakan anggota tubuh mengikuti node bernama yang tersedia.':'Model GLB belum memiliki rig anggota tubuh yang dikenali; kontrol tetap dapat menguji gerakan badan, tetapi gerakan tangan/kaki independen membutuhkan GLB ber-rig.');
+  const rig=document.querySelector('#rigInfo');const count=state.rig.arms.length+state.rig.legs.length+state.rig.head.length+state.rig.tail.length+state.rig.body.length;const eyeCount=state.rig.eyes.length;
+  rig.textContent='Rig: '+count+' bagian tubuh · '+eyeCount+' mesh mata ditemukan. Animasi dipisah per modul. '+(state.rig.arms.length&&state.rig.legs.length?'Kontrol pose menggerakkan node rig.':'Rig independen terbatas: model perlu armature/nama node yang sesuai untuk gerakan anggota tubuh alami.');
   loading?.remove();status('GLB DIMUAT · '+(state.clips.length?'ANIMASI TERTANAM':'MODE KONTROL 3D'));
  },undefined,error=>{console.error(error);loading.textContent='Model GLB gagal dimuat. Periksa file TCS_Mascot_3D.glb di repositori.';status('GAGAL MEMUAT GLB');});
 }
@@ -76,7 +78,7 @@ document.querySelector('#resetCharacter').onclick=()=>{setMotion('idle');setExpr
 const resize=()=>{const w=Math.max(1,stage.clientWidth),h=Math.max(1,stage.clientHeight);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)};const observer=new ResizeObserver(resize);observer.observe(stage);resize();
 loadGLB();
 let previous=0,raf=0,disposed=false;
-function frame(ms){if(disposed||document.hidden)return;raf=requestAnimationFrame(frame);const t=ms/1000,dt=Math.min(.05,(ms-previous)/1000||0);previous=ms;state.elapsed+=dt;if(state.model)animateRig(dt,t);if(state.blink&&state.expression!=='wink'){state.blinkTime+=dt;if(state.blinkTime>state.nextBlink){state.blinkTime=0;state.nextBlink=2.2+Math.random()*2.4;}}controls.update();renderer.render(scene,camera);}
+function frame(ms){if(disposed||document.hidden)return;raf=requestAnimationFrame(frame);const t=ms/1000,dt=Math.min(.05,(ms-previous)/1000||0);previous=ms;state.elapsed+=dt;if(state.model&&state.rig){tickCharacter(state.model,state.rig,state.motion,state.expression,state.elapsed,dt,state.blink);if(state.autoRotate)state.model.rotation.y+=dt*.45;}if(state.blink&&state.expression!=='wink'){state.blinkTime+=dt;if(state.blinkTime>state.nextBlink){state.blinkTime=0;state.nextBlink=2.2+Math.random()*2.4;}}controls.update();renderer.render(scene,camera);}
 raf=requestAnimationFrame(frame);
 renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();cancelAnimationFrame(raf);status('KONTEKS WEBGL TERPUTUS')});
 renderer.domElement.addEventListener('webglcontextrestored',()=>{previous=0;status('WEBGL DIPULIHKAN');raf=requestAnimationFrame(frame)});
