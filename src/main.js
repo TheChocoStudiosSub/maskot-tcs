@@ -4,6 +4,7 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import './style.css';
 import {discoverRig} from './animations/rig.js';
 import {tickCharacter} from './animations/controller.js';
+import {buildProceduralSkeleton} from './animations/procedural-skeleton.js';
 
 const stage=document.querySelector('#stage'),loading=document.querySelector('#loading');
 const scene=new THREE.Scene();scene.background=new THREE.Color('#080d2b');scene.fog=new THREE.Fog('#080d2b',10,24);
@@ -60,10 +61,10 @@ function loadGLB(){
   const box=new THREE.Box3().setFromObject(model),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());
   const max=Math.max(size.x,size.y,size.z)||1;const scale=2.9/max;model.scale.setScalar(scale);model.position.set(-center.x*scale,-box.min.y*scale, -center.z*scale);state.baseY=model.position.y;
   model.traverse(o=>{if(o.isMesh){o.frustumCulled=true;if(o.material){o.material.side=THREE.FrontSide;if('roughness' in o.material)o.material.roughness=Math.max(.35,o.material.roughness??.7);}}});
-  state.rig=discoverRig(model);state.clips=gltf.animations||[];state.mixer=null;
+  state.proceduralArmature=buildProceduralSkeleton(model);state.rig=discoverRig(model);state.clips=gltf.animations||[];state.mixer=null;
   controls.target.set(0,1.25,0);camera.position.set(0,2.15,7.8);controls.update();
   const rig=document.querySelector('#rigInfo');const count=state.rig.arms.length+state.rig.legs.length+state.rig.head.length+state.rig.tail.length+state.rig.body.length;const eyeCount=state.rig.eyes.length;
-  rig.textContent='Rig: '+count+' bagian tubuh · '+eyeCount+' mesh mata ditemukan. Animasi dipisah per modul. '+(state.rig.arms.length&&state.rig.legs.length?'Kontrol pose menggerakkan node rig.':'Rig independen terbatas: model perlu armature/nama node yang sesuai untuk gerakan anggota tubuh alami.');
+  rig.textContent='Armature prosedural aktif: '+state.proceduralArmature.bones.length+' tulang · '+state.proceduralArmature.skinnedMeshes.length+' mesh ter-skinning. Rig otomatis berbasis proporsi GLB; hasil deformasi bergantung pada bentuk mesh.';
   loading?.remove();status('GLB DIMUAT · '+(state.clips.length?'ANIMASI TERTANAM':'MODE KONTROL 3D'));
  },undefined,error=>{console.error(error);loading.textContent='Model GLB gagal dimuat. Periksa file TCS_Mascot_3D.glb di repositori.';status('GAGAL MEMUAT GLB');});
 }
