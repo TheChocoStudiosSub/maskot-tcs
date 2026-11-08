@@ -46,9 +46,12 @@ floor.rotation.x = -Math.PI / 2;
 floor.position.y = -0.03;
 scene.add(floor);
 
+const turntableRoot = new THREE.Group();
+turntableRoot.name = 'TCS_MASCOT_TURNTABLE';
+scene.add(turntableRoot);
 const characterRoot = new THREE.Group();
 characterRoot.name = 'TCS_MASCOT_IDLE_ROOT';
-scene.add(characterRoot);
+turntableRoot.add(characterRoot);
 
 let idleMotion = null;
 let autoRotate = false;
@@ -168,7 +171,7 @@ function frame(timestamp) {
   const dt = previousTime ? Math.min((timestamp - previousTime) / 1000, 0.05) : 0;
   previousTime = timestamp;
   idleMotion?.update(dt);
-  if (autoRotate) characterRoot.rotation.y += dt * 0.35;
+  if (autoRotate) turntableRoot.rotation.y += dt * 0.35;
   controls.update();
   renderer.render(scene, camera);
 }
