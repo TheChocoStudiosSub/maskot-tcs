@@ -14,7 +14,7 @@ const key=new THREE.DirectionalLight('#fff4ff',2.7);key.position.set(3,6,5);scen
 const rim=new THREE.PointLight('#685cff',17,11);rim.position.set(-3,2,-3);scene.add(rim);
 const fill=new THREE.PointLight('#48aaff',6,9);fill.position.set(3,1,3);scene.add(fill);
 const floor=new THREE.Mesh(new THREE.CircleGeometry(8,40),new THREE.MeshStandardMaterial({color:'#101b4c',roughness:.9}));floor.rotation.x=-Math.PI/2;floor.position.y=-.03;scene.add(floor);
-const state={motion:'idle',expression:'happy',blink:true,autoRotate:false,elapsed:0,model:null,mixer:null,clips:[],parts:{arms:[],legs:[],head:[],tail:[],body:[]},baseY:0,baseRot:new THREE.Euler(),blinkTime:0,nextBlink:2.5};
+const state={motion:'idle',expression:'happy',blink:true,autoRotate:false,elapsed:0,model:null,mixer:null,clips:[],activeClip:null,parts:{arms:[],legs:[],head:[],tail:[],body:[]},baseY:0,baseRot:new THREE.Euler(),blinkTime:0,nextBlink:2.5};
 function status(s){const el=document.querySelector('#statusText');if(el)el.textContent=s}
 function activate(sel,key,value){document.querySelectorAll(sel).forEach(b=>b.classList.toggle('active',b.dataset[key]===value))}
 function cameraAt(p){camera.position.set(...p);controls.target.set(0,.95,0);controls.update()}
@@ -28,7 +28,7 @@ function findParts(root){
  if(/body|torso|chest|spine|badan/.test(n))p.body.push(o);
  });
 }
-function setMotion(name){state.motion=name;state.elapsed=0;activate('[data-motion]','motion',name);if(state.mixer)state.mixer.stopAllAction();status('ANIMASI: '+name.toUpperCase());}
+function setMotion(name){state.motion=name;state.elapsed=0;activate('[data-motion]','motion',name);if(state.mixer){state.mixer.stopAllAction();const patterns={idle:/idle|stand|breath/,walk:/walk|run/,jump:/jump|hop/,sit:/sit/,wave:/wave|greet|hello/,cheer:/cheer|celebrate/};const clip=state.clips.find(c=>patterns[name]?.test(c.name));if(clip){state.activeClip=clip;state.mixer.clipAction(clip).reset().fadeIn(.18).play();}else state.activeClip=null;}status('ANIMASI: '+name.toUpperCase());}
 function setExpression(name){
  state.expression=name;activate('[data-expression]','expression',name);
  const presets={happy:{blink:1,mouth:0},wink:{blink:.22,mouth:0},surprised:{blink:1,mouth:1},sleepy:{blink:.55,mouth:0},angry:{blink:.8,mouth:0},sad:{blink:.9,mouth:0}};
@@ -61,7 +61,7 @@ function loadGLB(){
   findParts(model);state.clips=gltf.animations||[];if(state.clips.length){state.mixer=new THREE.AnimationMixer(model);const clip=state.clips.find(c=>/idle/i.test(c.name))||state.clips[0];state.mixer.clipAction(clip).play();}
   controls.target.set(0,1.25,0);camera.position.set(0,2.15,7.8);controls.update();
   const rig=document.querySelector('#rigInfo');const count=state.parts.arms.length+state.parts.legs.length+state.parts.head.length+state.parts.tail.length+state.parts.body.length;
-  rig.textContent=state.clips.length+' klip animasi GLB · '+count+' node rig terdeteksi. '+(count?'Kontrol gerak menggerakkan node model yang tersedia.':'Model ini belum memiliki tulang/nama node anggota tubuh; gerakan seluruh badan tetap dapat diuji, sedangkan gerak tangan/kaki independen memerlukan rigging GLB.');
+  rig.textContent=state.clips.length+' klip animasi GLB · '+count+' node bagian tubuh terdeteksi. '+(count?'Gerakan anggota tubuh mengikuti node bernama yang tersedia.':'Model GLB belum memiliki rig anggota tubuh yang dikenali; kontrol tetap dapat menguji gerakan badan, tetapi gerakan tangan/kaki independen membutuhkan GLB ber-rig.');
   loading?.remove();status('GLB DIMUAT · '+(state.clips.length?'ANIMASI TERTANAM':'MODE KONTROL 3D'));
  },undefined,error=>{console.error(error);loading.textContent='Model GLB gagal dimuat. Periksa file TCS_Mascot_3D.glb di repositori.';status('GAGAL MEMUAT GLB');});
 }
