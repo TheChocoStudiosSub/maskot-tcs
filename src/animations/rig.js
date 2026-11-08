@@ -11,8 +11,8 @@ export function discoverRig(model){
   if(o.isMesh && /mouth|lip|smile|brow|face|mulut|alis/.test(n))rig.face.push(o);
   rig.base.set(o,{position:o.position.clone(),rotation:o.rotation.clone(),scale:o.scale.clone()});
  });
- return rig;
+ rig.model=model;rig.baseModelPosition=model.position.clone();rig.baseModelRotation=model.rotation.clone();return rig;
 }
-export function restoreRig(rig){rig.base.forEach((b,o)=>{o.position.copy(b.position);o.rotation.copy(b.rotation);o.scale.copy(b.scale);});}
+export function restoreRig(rig){rig.base.forEach((b,o)=>{o.position.copy(b.position);o.rotation.copy(b.rotation);o.scale.copy(b.scale);});if(rig.model){rig.model.position.copy(rig.baseModelPosition);rig.model.rotation.x=rig.baseModelRotation.x;rig.model.rotation.z=rig.baseModelRotation.z;}}
 export function lerpRotation(o,axis,value,k){o.rotation[axis]+=(value-o.rotation[axis])*k;}
 export function pulse(t,rate,phase=0){return Math.sin(t*rate+phase);}
