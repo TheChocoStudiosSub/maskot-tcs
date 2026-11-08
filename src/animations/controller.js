@@ -1,0 +1,3 @@
+import {restoreRig} from './rig.js';
+import {animateIdle} from './idle.js';import {animateWave} from './wave.js';import {animateWalk} from './walk.js';import {animateJump} from './jump.js';import {animateSit} from './sit.js';import {animateCheer} from './cheer.js';import {animateBlink} from './blink.js';
+export function tickCharacter(model,rig,motion,expression,t,dt){restoreRig(rig);const k=1-Math.exp(-dt*9);if(motion==='idle')animateIdle(model,rig,t,k);else if(motion==='wave')animateWave(rig,t,k);else if(motion==='walk')animateWalk(model,rig,t,k);else if(motion==='jump')animateJump(model,rig,t);else if(motion==='sit')animateSit(rig,k);else if(motion==='cheer')animateCheer(rig,t,k);animateBlink(rig,t,expression);}
