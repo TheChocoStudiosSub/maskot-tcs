@@ -8,7 +8,11 @@ import * as THREE from 'three';
  */
 export function buildProceduralSkeleton(model) {
   model.updateMatrixWorld(true);
-  const box = new THREE.Box3().setFromObject(model);
+  const worldBox = new THREE.Box3().setFromObject(model);
+  const inverseRoot = model.matrixWorld.clone().invert();
+  const corners = [];
+  for (const xx of [worldBox.min.x,worldBox.max.x]) for (const yy of [worldBox.min.y,worldBox.max.y]) for (const zz of [worldBox.min.z,worldBox.max.z]) corners.push(new THREE.Vector3(xx,yy,zz).applyMatrix4(inverseRoot));
+  const box = new THREE.Box3().setFromPoints(corners);
   const size = box.getSize(new THREE.Vector3());
   const center = box.getCenter(new THREE.Vector3());
   const H = Math.max(size.y, 0.001), W = Math.max(size.x, H * 0.25), D = Math.max(size.z, H * 0.2);
