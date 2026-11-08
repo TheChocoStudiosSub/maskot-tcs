@@ -7,22 +7,15 @@ import { createIdleMotion } from './animations/idle.js';
 const stage = document.querySelector('#stage');
 const loading = document.querySelector('#loading');
 const statusText = document.querySelector('#statusText');
-
 if (!stage) throw new Error('Elemen #stage tidak ditemukan.');
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color('#080d2b');
 scene.fog = new THREE.Fog('#080d2b', 10, 24);
-
 const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 80);
 camera.position.set(0, 2.15, 7.8);
 
-const renderer = new THREE.WebGLRenderer({
-  antialias: false,
-  alpha: false,
-  powerPreference: 'low-power',
-  stencil: false
-});
+const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: false, powerPreference: 'low-power', stencil: false });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.25));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -48,10 +41,7 @@ const fillLight = new THREE.PointLight('#48aaff', 6, 9);
 fillLight.position.set(3, 1, 3);
 scene.add(fillLight);
 
-const floor = new THREE.Mesh(
-  new THREE.CircleGeometry(8, 40),
-  new THREE.MeshStandardMaterial({ color: '#101b4c', roughness: 0.9 })
-);
+const floor = new THREE.Mesh(new THREE.CircleGeometry(8, 40), new THREE.MeshStandardMaterial({ color: '#101b4c', roughness: 0.9 }));
 floor.rotation.x = -Math.PI / 2;
 floor.position.y = -0.03;
 scene.add(floor);
@@ -69,7 +59,6 @@ let disposed = false;
 function setStatus(message) {
   if (statusText) statusText.textContent = message;
 }
-
 function setCamera(position) {
   camera.position.set(...position);
   controls.target.set(0, 1.25, 0);
@@ -85,44 +74,35 @@ function loadMascot() {
         const model = gltf.scene;
         model.name = 'TCS_MASCOT_SOURCE_GLB';
 
-        // Preserve the original GLB hierarchy. No mesh is detached, regrouped,
-        // re-parented, or assigned to a guessed body-part pivot.
+        // Keep the source GLB hierarchy untouched. No mesh is detached,
+        // re-parented, or assigned to guessed body-part pivots.
         const bounds = new THREE.Box3().setFromObject(model);
         if (bounds.isEmpty()) throw new Error('GLB tidak memiliki geometri yang terlihat.');
-
         const size = bounds.getSize(new THREE.Vector3());
         const center = bounds.getCenter(new THREE.Vector3());
         const maxDimension = Math.max(size.x, size.y, size.z);
-        if (!Number.isFinite(maxDimension) || maxDimension <= 0) {
-          throw new Error('Ukuran model GLB tidak valid.');
-        }
+        if (!Number.isFinite(maxDimension) || maxDimension <= 0) throw new Error('Ukuran model GLB tidak valid.');
 
         const scale = 2.9 / maxDimension;
         model.scale.setScalar(scale);
         model.position.set(-center.x * scale, -center.y * scale, -center.z * scale);
-        characterRoot.position.set(0, center.y * scale, 0);
+        // Place the wrapper at the model center while keeping the feet on y=0.
+        characterRoot.position.set(0, (center.y - bounds.min.y) * scale, 0);
         characterRoot.add(model);
 
         let meshCount = 0;
         model.traverse((object) => {
           if (!object.isMesh) return;
           meshCount += 1;
-          // Keep every source mesh rendered while the complete model root moves.
           object.frustumCulled = false;
-          if (object.material && 'roughness' in object.material) {
-            object.material.roughness = Math.max(0.35, object.material.roughness ?? 0.7);
-          }
+          if (object.material && 'roughness' in object.material) object.material.roughness = Math.max(0.35, object.material.roughness ?? 0.7);
         });
         if (meshCount === 0) throw new Error('Tidak ditemukan mesh pada model GLB.');
 
         idleMotion = createIdleMotion(characterRoot);
         idleMotion.setEnabled(document.querySelector('#idleToggle')?.checked ?? true);
-
         const rigInfo = document.querySelector('#rigInfo');
-        if (rigInfo) {
-          rigInfo.textContent = `Model asli dipertahankan · ${meshCount} mesh · tanpa pemisahan anggota tubuh.`;
-        }
-
+        if (rigInfo) rigInfo.textContent = `Model asli dipertahankan · ${meshCount} mesh · tanpa pemisahan anggota tubuh.`;
         if (loading) loading.remove();
         setStatus('MODEL SIAP · SISTEM IDLE AKTIF');
         console.info('[TCS Idle] GLB loaded:', { meshCount, size: size.toArray(), scale });
@@ -207,10 +187,7 @@ renderer.domElement.addEventListener('webglcontextrestored', () => {
 });
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) cancelAnimationFrame(rafId);
-  else {
-    previousTime = 0;
-    rafId = requestAnimationFrame(frame);
-  }
+  else { previousTime = 0; rafId = requestAnimationFrame(frame); }
 });
 window.addEventListener('beforeunload', () => {
   disposed = true;
