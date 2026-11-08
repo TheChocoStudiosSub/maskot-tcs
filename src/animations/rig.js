@@ -183,12 +183,12 @@ export function discoverRig(model) {
   const hierarchy = describe(root);
   const meshAudit = Object.freeze({
     total: meshes.length,
-    assigned: movedMeshes.size + missingMeshes.length,
+    assigned: finalMeshSet.size,
     head: buckets.head.length, ears: buckets.ears.length,
     arms: buckets.arms.length, legs: buckets.legs.length,
     tail: buckets.tail.length, torso: buckets.torso.length,
     unassigned: buckets.unassigned.length,
-    missingAfterSafetyNet: 0
+    missingAfterSafetyNet: stillMissing.length
   });
   console.group('TCS GLB rig audit');
   console.table(meshAudit);
