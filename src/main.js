@@ -16,7 +16,7 @@ const key=new THREE.DirectionalLight('#fff4ff',2.7);key.position.set(3,6,5);scen
 const rim=new THREE.PointLight('#685cff',17,11);rim.position.set(-3,2,-3);scene.add(rim);
 const fill=new THREE.PointLight('#48aaff',6,9);fill.position.set(3,1,3);scene.add(fill);
 const floor=new THREE.Mesh(new THREE.CircleGeometry(8,40),new THREE.MeshStandardMaterial({color:'#101b4c',roughness:.9}));floor.rotation.x=-Math.PI/2;floor.position.y=-.03;scene.add(floor);
-const state={motion:'idle',expression:'happy',blink:true,autoRotate:false,elapsed:0,model:null,mixer:null,clips:[],activeClip:null,parts:{arms:[],legs:[],head:[],tail:[],body:[],eyes:[],face:[]},rig:null,baseY:0,baseRot:new THREE.Euler(),blinkTime:0,nextBlink:2.5};
+const state={motion:'idle',expression:'happy',blink:true,autoRotate:false,elapsed:0,model:null,mixer:null,clips:[],activeClip:null,parts:{arms:[],legs:[],head:[],tail:[],body:[],eyes:[],face:[]},rig:null,baseY:0,baseRot:new THREE.Euler(),blinkTime:0,nextBlink:2.5,autoAngle:0};
 function status(s){const el=document.querySelector('#statusText');if(el)el.textContent=s}
 function activate(sel,key,value){document.querySelectorAll(sel).forEach(b=>b.classList.toggle('active',b.dataset[key]===value))}
 function cameraAt(p){camera.position.set(...p);controls.target.set(0,.95,0);controls.update()}
@@ -51,7 +51,7 @@ function animateRig(dt,t){
  if(arms.length){arms.forEach((o,i)=>{const side=i%2===0?-1:1;let target=0;if(waving&&side>0)target=Math.sin(state.elapsed*8)*.75-1.05;else if(cheering)target=side*.95;else if(walking)target=Math.sin(t*8+ i*Math.PI)*.45; o.rotation.z+=(target-o.rotation.z)*smooth;});}
  if(legs.length){legs.forEach((o,i)=>{const side=i%2===0?-1:1;let target=walking?Math.sin(t*8+i*Math.PI)*.48:sitting?-.95:0;o.rotation.x+=(target-o.rotation.x)*smooth;o.rotation.z+=(sitting?side*.18:0-o.rotation.z)*smooth;});}
  if(body.length)body.forEach(o=>{const target=sitting?.22:walking?Math.sin(t*8)*.025:0;o.rotation.x+=(target-o.rotation.x)*smooth;});
- if(state.autoRotate)state.model.rotation.y+=dt*.45;
+ if(state.autoRotate){state.autoAngle+=dt*.45;state.model.rotation.y=state.rig.baseModelRotation.y+state.autoAngle;}
 }
 function loadGLB(){
  const loader=new GLTFLoader();
@@ -74,7 +74,7 @@ document.querySelector('#idleToggle').addEventListener('change',e=>{if(e.target.
 document.querySelector('#rotateToggle').addEventListener('change',e=>{state.autoRotate=e.target.checked;controls.enabled=!state.autoRotate});
 document.querySelector('#bgColor').addEventListener('input',e=>{scene.background.set(e.target.value);scene.fog.color.set(e.target.value)});
 document.querySelector('#frontView').onclick=()=>cameraAt([0,2.15,7.8]);document.querySelector('#sideView').onclick=()=>cameraAt([7.8,2.15,0]);document.querySelector('#backView').onclick=()=>cameraAt([0,2.15,-7.8]);document.querySelector('#resetView').onclick=()=>cameraAt([0,2.15,7.8]);
-document.querySelector('#resetCharacter').onclick=()=>{setMotion('idle');setExpression('happy');state.blink=true;state.autoRotate=false;document.querySelector('#blinkToggle').checked=true;document.querySelector('#rotateToggle').checked=false;controls.enabled=true;};
+document.querySelector('#resetCharacter').onclick=()=>{setMotion('idle');setExpression('happy');state.blink=true;state.autoRotate=false;state.autoAngle=0;document.querySelector('#blinkToggle').checked=true;document.querySelector('#rotateToggle').checked=false;controls.enabled=true;};
 const resize=()=>{const w=Math.max(1,stage.clientWidth),h=Math.max(1,stage.clientHeight);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)};const observer=new ResizeObserver(resize);observer.observe(stage);resize();
 loadGLB();
 let previous=0,raf=0,disposed=false;
