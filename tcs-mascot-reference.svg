@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+================================================================================
+ TCS MASCOT — REFERENCE SVG (FRONT VIEW)
+ Official Mascot of The Choco Studios
+================================================================================
+ Tujuan file ini: jadi PATOKAN BENTUK maskot. Kalau perlu maskotnya, pakai
+ kode ini langsung (inline atau <img>), JANGAN digenerate ulang / diubah bentuknya.
+
+ Canvas  : viewBox 0 0 440 560, titik tengah badan di x = 220
+ Gaya    : chibi, kepala gede (~45% tinggi), badan gemuk pendek, ekor gede
+ Simetri : kepala, telinga, mata, hoodie simetris terhadap x = 220
+           (ekor sengaja di sisi kanan, seperti di desain asli)
+
+ DAFTAR BAGIAN (id) — dari belakang ke depan:
+   #shadow        bayangan lantai
+   #tail          ekor, ujung lancip, 2 gerigi bulu di tepi bawah, 4 garis lengkung
+   #hood-back     tudung hoodie di belakang leher
+   #legs          2 kaki pendek tebal + 3 ruas jari per kaki (TANPA kuku/cakar)
+   #body          badan hoodie navy: kantong, tali 2, logo TCS + swoosh, rib bawah
+   #sleeves       2 lengan hoodie + patch biru bahu + manset rib
+   #hands         2 tangan putih bulat, 2 lipatan kecil per tangan (TANPA kuku)
+   #ears          2 telinga segitiga tinggi miring keluar (luar navy, dalam ungu)
+   #head-tufts    jambul (1 besar + 2 kecil)
+   #head          kepala kubah lebar, 3 gerigi bulu pipi per sisi
+   #ear-tufts     1 gumpalan bulu putih di pangkal dalam tiap telinga
+   #face          alis dahi, mata, hidung, mulut + 2 taring, pipi pink (2 goresan/sisi)
+
+ ATURAN BENTUK (jangan dilanggar):
+   - Tidak ada kuku / cakar. Tangan dan kaki bulat halus.
+   - Bulu = gumpalan lancip (tuft), bukan helai.
+   - Mulut terbuka pink dengan 2 taring kecil di atas.
+   - Telinga: luar navy gelap, dalam ungu gradasi. Tinggi, lancip, miring keluar.
+   - Logo TCS di dada selalu ada, dengan swoosh biru melengkung di kanan teks.
+
+ PALET WARNA:
+   putih bulu      #FFFFFF  #F1EFFF  #CFC9FF
+   lavender        #B9B3F5
+   ungu telinga    #6D4CFF  #A98CFF
+   navy telinga    #2A2080  #120D38
+   hoodie          #1F1B5C  #120F33  #0E0C26
+   biru aksen      #2B8CFF  #5AA8FF
+   mata            #0A0D3A  #1D3FD0  #3B82FF
+   pink            #FF6FAE  #FF9EC7
+================================================================================
+-->
+<svg xmlns="http://www.w3.org/2000/svg" id="tcs-mascot" viewBox="0 0 440 560" width="440" height="560" role="img" aria-label="TCS Mascot, maskot resmi The Choco Studios" xmlns:c2pa="http://c2pa.org/manifest">
+  <title>TCS Mascot</title>
+  <defs>
+    <!-- Bulu putih: terang di tengah, lavender di tepi -->
+    <radialGradient id="furGrad" cx="0.5" cy="0.35" r="0.8">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="0.55" stop-color="#F1EFFF"/>
+      <stop offset="1" stop-color="#CFC9FF"/>
+    </radialGradient>
+    <linearGradient id="tailGrad" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#CFC9FF"/>
+      <stop offset="0.5" stop-color="#F1EFFF"/>
+      <stop offset="1" stop-color="#FFFFFF"/>
+    </linearGradient>
+    <linearGradient id="earOuter" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2A2080"/>
+      <stop offset="1" stop-color="#120D38"/>
+    </linearGradient>
+    <linearGradient id="earInner" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#A98CFF"/>
+      <stop offset="1" stop-color="#6D4CFF"/>
+    </linearGradient>
+    <linearGradient id="eyeIris" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0C1450"/>
+      <stop offset="0.7" stop-color="#1D3FD0"/>
+      <stop offset="1" stop-color="#3B82FF"/>
+    </linearGradient>
+    <linearGradient id="hoodGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1F1B5C"/>
+      <stop offset="1" stop-color="#120F33"/>
+    </linearGradient>
+    <linearGradient id="blueGlow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5AA8FF"/>
+      <stop offset="1" stop-color="#2B6CFF"/>
+    </linearGradient>
+    <linearGradient id="swooshGrad" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#2B8CFF" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#2B8CFF"/>
+      <stop offset="1" stop-color="#8FC4FF"/>
+    </linearGradient>
+    <radialGradient id="shadowGrad" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#000000" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- ===================== SHADOW ===================== -->
+  <g id="shadow">
+    <ellipse cx="220" cy="534" rx="130" ry="16" fill="url(#shadowGrad)"/>
+  </g>
+
+  <!-- ===================== TAIL =====================
+       Ekor gede di sisi kanan, melengkung naik, ujung atas lancip (368,274).
+       Tepi bawah: 2 gerigi bulu. Di dalam: 4 garis lengkung lavender lembut. -->
+  <g id="tail">
+    <path d="M292 440 Q312 452 338 462 Q336 450 348 444 Q366 448 386 438 Q382 428 390 418 Q410 384 402 346 Q396 310 368 274 Q366 312 346 330 Q326 344 300 350 Z" fill="url(#tailGrad)"/>
+    <g fill="none" stroke="#CFC9FF" stroke-width="3" stroke-linecap="round" opacity="0.75">
+      <path d="M314 430 Q372 410 386 342"/>
+      <path d="M320 410 Q362 390 374 330"/>
+      <path d="M324 392 Q352 372 362 322"/>
+      <path d="M336 446 Q376 436 394 398"/>
+    </g>
+  </g>
+
+  <!-- ===================== HOOD BACK (tudung di belakang leher) ===================== -->
+  <g id="hood-back">
+    <path d="M144 298 Q220 276 296 298 Q320 322 318 352 Q220 330 122 352 Q120 322 144 298 Z" fill="#0F0D2B"/>
+    <path d="M160 318 Q220 304 280 318 Q290 332 288 342 Q220 326 152 342 Q150 332 160 318 Z" fill="#0A091F"/>
+  </g>
+
+  <!-- ===================== LEGS ===================== -->
+  <g id="legs">
+    <!-- perut bawah (putih, kelihatan di bawah hoodie) -->
+    <ellipse cx="220" cy="468" rx="72" ry="14" fill="url(#furGrad)"/>
+    <!-- kaki kiri -->
+    <path d="M158 456 C150 480 150 502 156 516 L206 516 C212 500 210 478 206 456 Z" fill="url(#furGrad)"/>
+    <!-- kaki kanan -->
+    <path d="M234 456 C230 478 228 500 234 516 L284 516 C290 502 290 480 282 456 Z" fill="url(#furGrad)"/>
+    <!-- telapak kaki: 3 ruas jari per kaki, tanpa kuku -->
+    <ellipse cx="180" cy="520" rx="33" ry="14" fill="url(#furGrad)"/>
+    <ellipse cx="260" cy="520" rx="33" ry="14" fill="url(#furGrad)"/>
+    <g stroke="#B9B3F5" stroke-width="2.5" stroke-linecap="round" fill="none">
+      <path d="M170 513 L168 525"/><path d="M190 513 L192 525"/>
+      <path d="M250 513 L248 525"/><path d="M270 513 L272 525"/>
+    </g>
+  </g>
+
+  <!-- ===================== BODY (HOODIE) ===================== -->
+  <g id="body">
+    <!-- badan -->
+    <path d="M138 336 C128 380 124 420 140 452 L300 452 C316 420 312 380 302 336 Q220 316 138 336 Z" fill="url(#hoodGrad)"/>
+    <!-- rib bawah hoodie -->
+    <path d="M140 440 L300 440 L302 460 Q220 468 138 460 Z" fill="#0E0C26"/>
+    <g stroke="#2A2766" stroke-width="1.5" opacity="0.8">
+      <path d="M160 442 L160 463"/><path d="M180 442 L180 465"/><path d="M200 442 L200 466"/>
+      <path d="M220 442 L220 467"/><path d="M240 442 L240 466"/><path d="M260 442 L260 465"/><path d="M280 442 L280 463"/>
+    </g>
+    <!-- kantong kanguru -->
+    <path d="M165 404 L275 404 L290 446 L150 446 Z" fill="#14123A" stroke="#2A2766" stroke-width="2" stroke-linejoin="round"/>
+    <!-- tali hoodie (2) + ujung biru -->
+    <g stroke="#2B4BD8" stroke-width="4" stroke-linecap="round" fill="none">
+      <path d="M196 332 Q190 358 196 380"/>
+      <path d="M244 332 Q250 358 244 380"/>
+    </g>
+    <rect x="192" y="378" width="8" height="12" rx="3" fill="#5AA8FF"/>
+    <rect x="240" y="378" width="8" height="12" rx="3" fill="#5AA8FF"/>
+    <!-- logo TCS + swoosh -->
+    <g id="logo-tcs">
+      <text x="212" y="376" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="800" font-style="italic" fill="#FFFFFF" letter-spacing="1">TCS</text>
+      <!-- swoosh: bulan sabit yg melingkar di SISI KANAN teks (mulai tipis di atas "C", paling tebal di kanan atas, turun melewati ujung "S", berakhir tipis di bawah "S") -->
+      <path d="M194 346 C240 330 290 348 284 376 C280 392 262 400 244 398 C262 392 272 384 272 374 C274 356 238 342 194 346 Z" fill="url(#swooshGrad)"/>
+    </g>
+  </g>
+
+  <!-- ===================== SLEEVES ===================== -->
+  <g id="sleeves">
+    <!-- lengan kiri -->
+    <path d="M140 338 C108 348 92 388 98 428 C98 434 104 438 112 438 L144 440 C150 410 152 372 150 344 Z" fill="url(#hoodGrad)"/>
+    <path d="M96 424 Q120 436 146 434 L148 448 Q120 452 98 440 Z" fill="#0E0C26"/>
+    <path d="M112 366 L132 352 L134 384 L114 396 Z" fill="url(#blueGlow)" opacity="0.95"/>
+    <!-- lengan kanan -->
+    <path d="M300 338 C332 348 348 388 342 428 C342 434 336 438 328 438 L296 440 C290 410 288 372 290 344 Z" fill="url(#hoodGrad)"/>
+    <path d="M344 424 Q320 436 294 434 L292 448 Q320 452 342 440 Z" fill="#0E0C26"/>
+    <path d="M328 366 L308 352 L306 384 L326 396 Z" fill="url(#blueGlow)" opacity="0.95"/>
+  </g>
+
+  <!-- ===================== HANDS (tanpa kuku) ===================== -->
+  <g id="hands">
+    <ellipse cx="118" cy="462" rx="20" ry="16" fill="url(#furGrad)"/>
+    <ellipse cx="322" cy="462" rx="20" ry="16" fill="url(#furGrad)"/>
+    <g stroke="#B9B3F5" stroke-width="2" stroke-linecap="round" fill="none">
+      <path d="M112 466 L110 474"/><path d="M124 466 L126 474"/>
+      <path d="M316 466 L314 474"/><path d="M328 466 L330 474"/>
+    </g>
+  </g>
+
+  <!-- ===================== EARS =====================
+       Tinggi, lancip, miring keluar. Ujung kiri (78,36), ujung kanan (362,36). -->
+  <g id="ears">
+    <!-- telinga kiri -->
+    <path d="M96 168 C70 120 66 70 78 36 C128 46 178 80 196 122 Z" fill="url(#earOuter)"/>
+    <path d="M96 168 C70 120 66 70 78 36" fill="none" stroke="#4B6BFF" stroke-width="2" opacity="0.55"/>
+    <path d="M104 150 C90 118 88 84 94 62 C130 74 164 98 178 124 Z" fill="url(#earInner)"/>
+    <path d="M106 142 C98 118 98 96 102 80 C124 90 146 106 158 124 Z" fill="#C7B4FF" opacity="0.45"/>
+    <!-- telinga kanan (cermin) -->
+    <path d="M344 168 C370 120 374 70 362 36 C312 46 262 80 244 122 Z" fill="url(#earOuter)"/>
+    <path d="M344 168 C370 120 374 70 362 36" fill="none" stroke="#4B6BFF" stroke-width="2" opacity="0.55"/>
+    <path d="M336 150 C350 118 352 84 346 62 C310 74 276 98 262 124 Z" fill="url(#earInner)"/>
+    <path d="M334 142 C342 118 342 96 338 80 C316 90 294 106 282 124 Z" fill="#C7B4FF" opacity="0.45"/>
+  </g>
+
+  <!-- ===================== HEAD TUFTS (jambul): 1 besar + 2 kecil ===================== -->
+  <g id="head-tufts" fill="url(#furGrad)">
+    <path d="M196 116 Q198 80 218 50 Q224 76 244 114 Z"/>
+    <path d="M178 118 Q174 100 186 90 Q190 104 204 114 Z"/>
+    <path d="M250 116 Q258 102 270 102 Q264 114 264 126 Z"/>
+  </g>
+
+  <!-- ===================== HEAD =====================
+       Kubah lebar. Tiap sisi: 3 gerigi bulu pipi (tip kanan 384,192 / 388,232 / 376,272;
+       tip kiri 56,192 / 52,232 / 64,272). -->
+  <g id="head">
+    <path d="M220 98
+             C282 98 336 128 350 178
+             Q366 184 384 192 Q368 202 356 212
+             Q372 218 388 232 Q370 240 354 250
+             Q366 258 376 272 Q352 276 334 280
+             C312 306 268 316 220 316
+             C172 316 128 306 106 280
+             Q88 276 64 272 Q74 258 86 250
+             Q70 240 52 232 Q68 218 84 212
+             Q72 202 56 192 Q74 184 90 178
+             C104 128 158 98 220 98 Z" fill="url(#furGrad)"/>
+    <!-- bayangan lembut bawah kepala -->
+    <path d="M110 284 C132 306 172 314 220 314 C268 314 308 306 330 284 C300 300 262 304 220 304 C178 304 140 300 110 284 Z" fill="#CFC9FF" opacity="0.55"/>
+  </g>
+
+  <!-- ===================== EAR TUFTS: 1 gumpalan putih di pangkal dalam tiap telinga ===================== -->
+  <g id="ear-tufts" fill="url(#furGrad)">
+    <path d="M150 152 Q146 126 160 118 Q166 132 186 140 Q170 148 150 152 Z"/>
+    <path d="M290 152 Q294 126 280 118 Q274 132 254 140 Q270 148 290 152 Z"/>
+  </g>
+
+  <!-- ===================== FACE ===================== -->
+  <g id="face">
+    <!-- tanda dahi (2 oval lavender kecil) -->
+    <ellipse cx="150" cy="162" rx="12" ry="4.5" fill="#B9B3F5" opacity="0.85" transform="rotate(-8 150 162)"/>
+    <ellipse cx="290" cy="162" rx="12" ry="4.5" fill="#B9B3F5" opacity="0.85" transform="rotate(8 290 162)"/>
+
+    <!-- mata kiri -->
+    <g id="eye-left">
+      <ellipse cx="160" cy="208" rx="30" ry="38" fill="#0A0D3A"/>
+      <ellipse cx="160" cy="216" rx="25" ry="31" fill="url(#eyeIris)"/>
+      <ellipse cx="160" cy="210" rx="15" ry="21" fill="#06082A"/>
+      <circle cx="151" cy="194" r="8.5" fill="#FFFFFF"/>
+      <circle cx="172" cy="228" r="4" fill="#FFFFFF" opacity="0.85"/>
+      <path d="M130 200 Q140 172 166 172 Q184 174 190 190" fill="none" stroke="#05061F" stroke-width="5" stroke-linecap="round"/>
+    </g>
+    <!-- mata kanan -->
+    <g id="eye-right">
+      <ellipse cx="280" cy="208" rx="30" ry="38" fill="#0A0D3A"/>
+      <ellipse cx="280" cy="216" rx="25" ry="31" fill="url(#eyeIris)"/>
+      <ellipse cx="280" cy="210" rx="15" ry="21" fill="#06082A"/>
+      <circle cx="271" cy="194" r="8.5" fill="#FFFFFF"/>
+      <circle cx="292" cy="228" r="4" fill="#FFFFFF" opacity="0.85"/>
+      <path d="M310 200 Q300 172 274 172 Q256 174 250 190" fill="none" stroke="#05061F" stroke-width="5" stroke-linecap="round"/>
+    </g>
+
+    <!-- pipi pink: 2 goresan per sisi -->
+    <g stroke="#FF8FBD" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.85">
+      <path d="M104 252 L120 249"/><path d="M112 259 L127 256"/>
+      <path d="M336 252 L320 249"/><path d="M328 259 L313 256"/>
+    </g>
+
+    <!-- hidung kecil -->
+    <path d="M211 236 Q220 231 229 236 Q225 246 220 247 Q215 246 211 236 Z" fill="#1A1A4A"/>
+    <ellipse cx="218" cy="236" rx="3" ry="1.6" fill="#FFFFFF" opacity="0.55"/>
+    <path d="M220 247 L220 251" stroke="#1A1A4A" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- mulut terbuka pink + 2 taring -->
+    <g id="mouth">
+      <path d="M194 250 Q220 245 246 250 Q244 282 220 286 Q196 282 194 250 Z" fill="#FF6FAE" stroke="#5A1F55" stroke-width="2.5" stroke-linejoin="round"/>
+      <ellipse cx="220" cy="274" rx="15" ry="8" fill="#FF9EC7"/>
+      <path d="M199 251 L208 250.5 L203 261 Z" fill="#FFFFFF"/>
+      <path d="M241 251 L232 250.5 L237 261 Z" fill="#FFFFFF"/>
+    </g>
+  </g>
+<metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTo1ZjlmZmZmZC1lNmYyLTQ1MGYtOWNkYy1iYWY3NzI0ZTYxNTAAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaBpxw5KAVojOJzlTfYB3vQwAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDo1MGFmYmJjMi1jZTJlLTQ0NjAtOTRmNi1kZDA2MmYzNGVmNGVscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNoLJBqQiQKWZCn0tVsBtP8sgAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggrKONL/M0WL3x2g1iHHtujoz9lqScX9bSH300/qLymgGkZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaGKl/w2CE0uziCz7DyrwOHwAAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRMAAAAAAAAAAAAAAAAZGhhc2hYID9+aQ5BlHIaE1razkUO2t3o7ZpOMBuWo50Sk92iBsrOZG5hbWVuanVtYmYgbWFuaWZlc3RqZXhjbHVzaW9uc4GiZXN0YXJ0GTiVZmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOjVmOWZmZmZkLWU2ZjItNDUwZi05Y2RjLWJhZjc3MjRlNjE1MC9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOjUzNTExNTJkLTk2MmQtNDljOS1hYjNkLWNjYTc2N2U3MGQwOXJjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCCso40v8zRYvfHaDWIce26OjP2WpJxf1tIffTT+ovKaAaJjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFgg8FCQ8UB6Zeo3PW8lN7GKhZFVTUVkzrp6wZGVpRqB5LyiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFggQrmMq3DtNgpWjMrFZPLS4zovn8h8zAA8OP7GtcRelTZ0Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQAYLYhZ0dAPOzy9jRxdbLKJ4KiwDMuE9ukx9+t17SdPfgGiofofYEbxBeosf1uOsbt83UMpUB2jirV7qswWSM7o=</c2pa:manifest></metadata></svg>
