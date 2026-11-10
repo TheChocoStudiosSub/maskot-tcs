@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+================================================================================
+ TCS MASCOT - KIT EKSPRESI (tampak depan, 7 wajah dalam 1 file)
+================================================================================
+ Badan, kepala, telinga, hoodie = SATU kali saja (identik dengan referensi).
+ Wajah ada 7 grup: #face-normal #face-happy #face-wink #face-surprised
+                   #face-sleepy #face-angry #face-sad
+ Hanya #face-normal yang visibility="visible"; sisanya "hidden".
+
+ CARA GANTI EKSPRESI:
+   - CSS/JS : document.getElementById('face-happy').setAttribute('visibility','visible')
+              (dan sembunyikan yang lain)
+   - SMIL   : tambahkan di dalam grup wajah, contoh ngedip tiap 4 detik:
+              <set attributeName="visibility" to="visible" begin="4s;8s" dur="0.2s"/>
+   - Aturan: selalu tampilkan TEPAT SATU #face-* pada satu waktu.
+================================================================================
+-->
+<svg xmlns="http://www.w3.org/2000/svg" id="tcs-mascot" viewBox="0 0 440 560" width="440" height="560" role="img" aria-label="TCS Mascot, maskot resmi The Choco Studios" xmlns:c2pa="http://c2pa.org/manifest">
+  <title>TCS Mascot</title>
+  <defs>
+    <!-- Bulu putih: terang di tengah, lavender di tepi -->
+    <radialGradient id="furGrad" cx="0.5" cy="0.35" r="0.8">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="0.55" stop-color="#F1EFFF"/>
+      <stop offset="1" stop-color="#CFC9FF"/>
+    </radialGradient>
+    <linearGradient id="tailGrad" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#CFC9FF"/>
+      <stop offset="0.5" stop-color="#F1EFFF"/>
+      <stop offset="1" stop-color="#FFFFFF"/>
+    </linearGradient>
+    <linearGradient id="earOuter" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2A2080"/>
+      <stop offset="1" stop-color="#120D38"/>
+    </linearGradient>
+    <linearGradient id="earInner" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#A98CFF"/>
+      <stop offset="1" stop-color="#6D4CFF"/>
+    </linearGradient>
+    <linearGradient id="eyeIris" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0C1450"/>
+      <stop offset="0.7" stop-color="#1D3FD0"/>
+      <stop offset="1" stop-color="#3B82FF"/>
+    </linearGradient>
+    <linearGradient id="hoodGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1F1B5C"/>
+      <stop offset="1" stop-color="#120F33"/>
+    </linearGradient>
+    <linearGradient id="blueGlow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5AA8FF"/>
+      <stop offset="1" stop-color="#2B6CFF"/>
+    </linearGradient>
+    <linearGradient id="swooshGrad" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#2B8CFF" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#2B8CFF"/>
+      <stop offset="1" stop-color="#8FC4FF"/>
+    </linearGradient>
+    <radialGradient id="shadowGrad" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#000000" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- ===================== SHADOW ===================== -->
+  <g id="shadow">
+    <ellipse cx="220" cy="534" rx="130" ry="16" fill="url(#shadowGrad)"/>
+  </g>
+
+  <!-- ===================== TAIL =====================
+       Ekor gede di sisi kanan, melengkung naik, ujung atas lancip (368,274).
+       Tepi bawah: 2 gerigi bulu. Di dalam: 4 garis lengkung lavender lembut. -->
+  <g id="tail">
+    <path d="M292 440 Q312 452 338 462 Q336 450 348 444 Q366 448 386 438 Q382 428 390 418 Q410 384 402 346 Q396 310 368 274 Q366 312 346 330 Q326 344 300 350 Z" fill="url(#tailGrad)"/>
+    <g fill="none" stroke="#CFC9FF" stroke-width="3" stroke-linecap="round" opacity="0.75">
+      <path d="M314 430 Q372 410 386 342"/>
+      <path d="M320 410 Q362 390 374 330"/>
+      <path d="M324 392 Q352 372 362 322"/>
+      <path d="M336 446 Q376 436 394 398"/>
+    </g>
+  </g>
+
+  <!-- ===================== HOOD BACK (tudung di belakang leher) ===================== -->
+  <g id="hood-back">
+    <path d="M144 298 Q220 276 296 298 Q320 322 318 352 Q220 330 122 352 Q120 322 144 298 Z" fill="#0F0D2B"/>
+    <path d="M160 318 Q220 304 280 318 Q290 332 288 342 Q220 326 152 342 Q150 332 160 318 Z" fill="#0A091F"/>
+  </g>
+
+  <!-- ===================== LEGS ===================== -->
+  <g id="legs">
+    <!-- perut bawah (putih, kelihatan di bawah hoodie) -->
+    <ellipse cx="220" cy="468" rx="72" ry="14" fill="url(#furGrad)"/>
+    <!-- kaki kiri -->
+    <path d="M158 456 C150 480 150 502 156 516 L206 516 C212 500 210 478 206 456 Z" fill="url(#furGrad)"/>
+    <!-- kaki kanan -->
+    <path d="M234 456 C230 478 228 500 234 516 L284 516 C290 502 290 480 282 456 Z" fill="url(#furGrad)"/>
+    <!-- telapak kaki: 3 ruas jari per kaki, tanpa kuku -->
+    <ellipse cx="180" cy="520" rx="33" ry="14" fill="url(#furGrad)"/>
+    <ellipse cx="260" cy="520" rx="33" ry="14" fill="url(#furGrad)"/>
+    <g stroke="#B9B3F5" stroke-width="2.5" stroke-linecap="round" fill="none">
+      <path d="M170 513 L168 525"/><path d="M190 513 L192 525"/>
+      <path d="M250 513 L248 525"/><path d="M270 513 L272 525"/>
+    </g>
+  </g>
+
+  <!-- ===================== BODY (HOODIE) ===================== -->
+  <g id="body">
+    <!-- badan -->
+    <path d="M138 336 C128 380 124 420 140 452 L300 452 C316 420 312 380 302 336 Q220 316 138 336 Z" fill="url(#hoodGrad)"/>
+    <!-- rib bawah hoodie -->
+    <path d="M140 440 L300 440 L302 460 Q220 468 138 460 Z" fill="#0E0C26"/>
+    <g stroke="#2A2766" stroke-width="1.5" opacity="0.8">
+      <path d="M160 442 L160 463"/><path d="M180 442 L180 465"/><path d="M200 442 L200 466"/>
+      <path d="M220 442 L220 467"/><path d="M240 442 L240 466"/><path d="M260 442 L260 465"/><path d="M280 442 L280 463"/>
+    </g>
+    <!-- kantong kanguru -->
+    <path d="M165 404 L275 404 L290 446 L150 446 Z" fill="#14123A" stroke="#2A2766" stroke-width="2" stroke-linejoin="round"/>
+    <!-- tali hoodie (2) + ujung biru -->
+    <g stroke="#2B4BD8" stroke-width="4" stroke-linecap="round" fill="none">
+      <path d="M196 332 Q190 358 196 380"/>
+      <path d="M244 332 Q250 358 244 380"/>
+    </g>
+    <rect x="192" y="378" width="8" height="12" rx="3" fill="#5AA8FF"/>
+    <rect x="240" y="378" width="8" height="12" rx="3" fill="#5AA8FF"/>
+    <!-- logo TCS + swoosh -->
+    <g id="logo-tcs">
+      <text x="212" y="376" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="800" font-style="italic" fill="#FFFFFF" letter-spacing="1">TCS</text>
+      <!-- swoosh: bulan sabit yg melingkar di SISI KANAN teks (mulai tipis di atas "C", paling tebal di kanan atas, turun melewati ujung "S", berakhir tipis di bawah "S") -->
+      <path d="M194 346 C240 330 290 348 284 376 C280 392 262 400 244 398 C262 392 272 384 272 374 C274 356 238 342 194 346 Z" fill="url(#swooshGrad)"/>
+    </g>
+  </g>
+
+  <!-- ===================== SLEEVES ===================== -->
+  <g id="sleeves">
+    <!-- lengan kiri -->
+    <path d="M140 338 C108 348 92 388 98 428 C98 434 104 438 112 438 L144 440 C150 410 152 372 150 344 Z" fill="url(#hoodGrad)"/>
+    <path d="M96 424 Q120 436 146 434 L148 448 Q120 452 98 440 Z" fill="#0E0C26"/>
+    <path d="M112 366 L132 352 L134 384 L114 396 Z" fill="url(#blueGlow)" opacity="0.95"/>
+    <!-- lengan kanan -->
+    <path d="M300 338 C332 348 348 388 342 428 C342 434 336 438 328 438 L296 440 C290 410 288 372 290 344 Z" fill="url(#hoodGrad)"/>
+    <path d="M344 424 Q320 436 294 434 L292 448 Q320 452 342 440 Z" fill="#0E0C26"/>
+    <path d="M328 366 L308 352 L306 384 L326 396 Z" fill="url(#blueGlow)" opacity="0.95"/>
+  </g>
+
+  <!-- ===================== HANDS (tanpa kuku) ===================== -->
+  <g id="hands">
+    <ellipse cx="118" cy="462" rx="20" ry="16" fill="url(#furGrad)"/>
+    <ellipse cx="322" cy="462" rx="20" ry="16" fill="url(#furGrad)"/>
+    <g stroke="#B9B3F5" stroke-width="2" stroke-linecap="round" fill="none">
+      <path d="M112 466 L110 474"/><path d="M124 466 L126 474"/>
+      <path d="M316 466 L314 474"/><path d="M328 466 L330 474"/>
+    </g>
+  </g>
+
+  <!-- ===================== EARS =====================
+       Tinggi, lancip, miring keluar. Ujung kiri (78,36), ujung kanan (362,36). -->
+  <g id="ears">
+    <!-- telinga kiri -->
+    <path d="M96 168 C70 120 66 70 78 36 C128 46 178 80 196 122 Z" fill="url(#earOuter)"/>
+    <path d="M96 168 C70 120 66 70 78 36" fill="none" stroke="#4B6BFF" stroke-width="2" opacity="0.55"/>
+    <path d="M104 150 C90 118 88 84 94 62 C130 74 164 98 178 124 Z" fill="url(#earInner)"/>
+    <path d="M106 142 C98 118 98 96 102 80 C124 90 146 106 158 124 Z" fill="#C7B4FF" opacity="0.45"/>
+    <!-- telinga kanan (cermin) -->
+    <path d="M344 168 C370 120 374 70 362 36 C312 46 262 80 244 122 Z" fill="url(#earOuter)"/>
+    <path d="M344 168 C370 120 374 70 362 36" fill="none" stroke="#4B6BFF" stroke-width="2" opacity="0.55"/>
+    <path d="M336 150 C350 118 352 84 346 62 C310 74 276 98 262 124 Z" fill="url(#earInner)"/>
+    <path d="M334 142 C342 118 342 96 338 80 C316 90 294 106 282 124 Z" fill="#C7B4FF" opacity="0.45"/>
+  </g>
+
+  <!-- ===================== HEAD TUFTS (jambul): 1 besar + 2 kecil ===================== -->
+  <g id="head-tufts" fill="url(#furGrad)">
+    <path d="M196 116 Q198 80 218 50 Q224 76 244 114 Z"/>
+    <path d="M178 118 Q174 100 186 90 Q190 104 204 114 Z"/>
+    <path d="M250 116 Q258 102 270 102 Q264 114 264 126 Z"/>
+  </g>
+
+  <!-- ===================== HEAD =====================
+       Kubah lebar. Tiap sisi: 3 gerigi bulu pipi (tip kanan 384,192 / 388,232 / 376,272;
+       tip kiri 56,192 / 52,232 / 64,272). -->
+  <g id="head">
+    <path d="M220 98
+             C282 98 336 128 350 178
+             Q366 184 384 192 Q368 202 356 212
+             Q372 218 388 232 Q370 240 354 250
+             Q366 258 376 272 Q352 276 334 280
+             C312 306 268 316 220 316
+             C172 316 128 306 106 280
+             Q88 276 64 272 Q74 258 86 250
+             Q70 240 52 232 Q68 218 84 212
+             Q72 202 56 192 Q74 184 90 178
+             C104 128 158 98 220 98 Z" fill="url(#furGrad)"/>
+    <!-- bayangan lembut bawah kepala -->
+    <path d="M110 284 C132 306 172 314 220 314 C268 314 308 306 330 284 C300 300 262 304 220 304 C178 304 140 300 110 284 Z" fill="#CFC9FF" opacity="0.55"/>
+  </g>
+
+  <!-- ===================== EAR TUFTS: 1 gumpalan putih di pangkal dalam tiap telinga ===================== -->
+  <g id="ear-tufts" fill="url(#furGrad)">
+    <path d="M150 152 Q146 126 160 118 Q166 132 186 140 Q170 148 150 152 Z"/>
+    <path d="M290 152 Q294 126 280 118 Q274 132 254 140 Q270 148 290 152 Z"/>
+  </g>
+
+  
+  <!-- ===== ekspresi: normal ===== -->
+  <g id="face-normal" class="face" visibility="visible">
+    <ellipse cx="150" cy="162" rx="12" ry="4.5" fill="#B9B3F5" opacity="0.85" transform="rotate(-8 150 162)"/>
+    <ellipse cx="290" cy="162" rx="12" ry="4.5" fill="#B9B3F5" opacity="0.85" transform="rotate(8 290 162)"/>
+    <g id="normal-eye-left"><g>
+      <ellipse cx="160" cy="208" rx="30" ry="38" fill="#0A0D3A"/>
+      <ellipse cx="160" cy="216" rx="25" ry="31" fill="url(#eyeIris)"/>
+      <ellipse cx="160" cy="210" rx="15" ry="21" fill="#06082A"/>
+      <circle cx="151" cy="194" r="8.5" fill="#FFFFFF"/>
+      <circle cx="172" cy="228" r="4" fill="#FFFFFF" opacity="0.85"/>
+      <path d="M130 200 Q140 172 166 172 Q184 174 190 190" fill="none" stroke="#05061F" stroke-width="5" stroke-linecap="round"/>
+    </g></g>
+    <g id="normal-eye-right"><g>
+      <ellipse cx="280" cy="208" rx="30" ry="38" fill="#0A0D3A"/>
+      <ellipse cx="280" cy="216" rx="25" ry="31" fill="url(#eyeIris)"/>
+      <ellipse cx="280" cy="210" rx="15" ry="21" fill="#06082A"/>
+      <circle cx="271" cy="194" r="8.5" fill="#FFFFFF"/>
+      <circle cx="292" cy="228" r="4" fill="#FFFFFF" opacity="0.85"/>
+      <path d="M310 200 Q300 172 274 172 Q256 174 250 190" fill="none" stroke="#05061F" stroke-width="5" stroke-linecap="round"/>
+    </g></g>
+    <g stroke="#FF8FBD" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.85">
+      <path d="M104 252 L120 249"/><path d="M112 259 L127 256"/>
+      <path d="M336 252 L320 249"/><path d="M328 259 L313 256"/>
+    </g>
+    <path d="M211 236 Q220 231 229 236 Q225 246 220 247 Q215 246 211 236 Z" fill="#1A1A4A"/>
+    <ellipse cx="218" cy="236" rx="3" ry="1.6" fill="#FFFFFF" opacity="0.55"/>
+    <path d="M220 247 L220 251" stroke="#1A1A4A" stroke-width="2" stroke-linecap="round"/>
+    <g id="normal-mouth">
+      <path d="M194 250 Q220 245 246 250 Q244 282 220 286 Q196 282 194 250 Z" fill="#FF6FAE" stroke="#5A1F55" stroke-width="2.5" stroke-linejoin="round"/>
+      <ellipse cx="220" cy="274" rx="15" ry="8" fill="#FF9EC7"/>
+      <path d="M199 251 L208 250.5 L203 261 Z" fill="#FFFFFF"/>
+      <path d="M241 251 L232 250.5 L237 261 Z" fill="#FFFFFF"/>
+    </g>
+    
+  </g>
+
+  <!-- ===== ekspresi: happy ===== -->
+  <g id="face-happy" class="face" visibility="hidden">
+    <ellipse cx="150" cy="162" rx="12" ry="4.5" fill="#B9B3F5" opacity="0.85" transform="rotate(-8 150 162)"/>
+    <ellipse cx="290" cy="162" rx="12" ry="4.5" fill="#B9B3F5" opacity="0.85" transform="rotate(8 290 162)"/>
+    <g id="happy-eye-left"><path d="M133 216 Q160 170 187 216" fill="none" stroke="#05061F" stroke-width="7" stroke-linecap="round"/></g>
+    <g id="happy-eye-right"><path d="M253 216 Q280 170 307 216" fill="none" stroke="#05061F" stroke-width="7" stroke-linecap="round"/></g>
+    <g stroke="#FF8FBD" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.85">
+      <path d="M104 252 L120 249"/><path d="M112 259 L127 256"/>
+      <path d="M336 252 L320 249"/><path d="M328 259 L313 256"/>
+    </g>
+    <path d="M211 236 Q220 231 229 236 Q225 246 220 247 Q215 246 211 236 Z" fill="#1A1A4A"/>
+    <ellipse cx="218" cy="236" rx="3" ry="1.6" fill="#FFFFFF" opacity="0.55"/>
+    <path d="M220 247 L220 251" stroke="#1A1A4A" stroke-width="2" stroke-linecap="round"/>
+    <g id="happy-mouth">
+      <path d="M188 246 Q220 240 252 246 Q254 292 220 298 Q186 292 188 246 Z" fill="#FF6FAE" stroke="#5A1F55" stroke-width="2.5" stroke-linejoin="round"/>
+      <ellipse cx="220" cy="284" rx="19" ry="9.5" fill="#FF9EC7"/>
+      <path d="M193 247 L206 246.5 L199 260 Z" fill="#FFFFFF"/>
+      <path d="M247 247 L234 246.5 L241 260 Z" fill="#FFFFFF"/>
+    </g>
+    <g stroke="#FFC93C" stroke-width="5" stroke-linecap="round" fill="none"><path d="M40 120 L58 134"/><path d="M32 150 L56 152"/><path d="M400 120 L382 134"/><path d="M408 150 L384 152"/></g>
+  </g>
+
+  <!-- ===== ekspresi: wink ===== -->
+  <g id="face-wink" class="face" visibility="hidden">
+    <ellipse cx="150" cy="162" rx="12" ry="4.5" fill="#B9B3F5" opacity="0.85" transform="rotate(-8 150 162)"/>
+    <ellipse cx="290" cy="162" rx="12" ry="4.5" fill="#B9B3F5" opacity="0.85" transform="rotate(8 290 162)"/>
+    <g id="wink-eye-left"><g>
+      <ellipse cx="160" cy="208" rx="30" ry="38" fill="#0A0D3A"/>
+      <ellipse cx="160" cy="216" rx="25" ry="31" fill="url(#eyeIris)"/>
+      <ellipse cx="160" cy="210" rx="15" ry="21" fill="#06082A"/>
+      <circle cx="151" cy="194" r="8.5" fill="#FFFFFF"/>
+      <circle cx="172" cy="228" r="4" fill="#FFFFFF" opacity="0.85"/>
+      <path d="M130 200 Q140 172 166 172 Q184 174 190 190" fill="none" stroke="#05061F" stroke-width="5" stroke-linecap="round"/>
+    </g></g>
+    <g id="wink-eye-right"><path d="M253 216 Q280 170 307 216" fill="none" stroke="#05061F" stroke-width="7" stroke-linecap="round"/></g>
+    <g stroke="#FF8FBD" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.85">
+      <path d="M104 252 L120 249"/><path d="M112 259 L127 256"/>
+      <path d="M336 252 L320 249"/><path d="M328 259 L313 256"/>
+    </g>
+    <path d="M211 236 Q220 231 229 236 Q225 246 220 247 Q215 246 211 236 Z" fill="#1A1A4A"/>
+    <ellipse cx="218" cy="236" rx="3" ry="1.6" fill="#FFFFFF" opacity="0.55"/>
+    <path d="M220 247 L220 251" stroke="#1A1A4A" stroke-width="2" stroke-linecap="round"/>
+    <g id="wink-mouth">
+      <path d="M194 250 Q220 245 246 250 Q244 282 220 286 Q196 282 194 250 Z" fill="#FF6FAE" stroke="#5A1F55" stroke-width="2.5" stroke-linejoin="round"/>
+      <ellipse cx="220" cy="274" rx="15" ry="8" fill="#FF9EC7"/>
+      <path d="M199 251 L208 250.5 L203 261 Z" fill="#FFFFFF"/>
+      <path d="M241 251 L232 250.5 L237 261 Z" fill="#FFFFFF"/>
+    </g>
+    <g stroke="#3B82FF" stroke-width="5" stroke-linecap="round" fill="none"><path d="M394 118 L412 108"/><path d="M396 142 L420 140"/></g>
+  </g>
+
+  <!-- ===== ekspresi: surprised ===== -->
+  <g id="face-surprised" class="face" visibility="hidden">
+    <ellipse cx="150" cy="162" rx="12" ry="4.5" fill="#B9B3F5" opacity="0.85" transform="rotate(-8 150 162)"/>
+    <ellipse cx="290" cy="162" rx="12" ry="4.5" fill="#B9B3F5" opacity="0.85" transform="rotate(8 290 162)"/>
+    <g id="surprised-eye-left"><g>
+      <ellipse cx="160" cy="208" rx="33" ry="42" fill="#0A0D3A"/>
+      <ellipse cx="160" cy="215" rx="28" ry="35" fill="url(#eyeIris)"/>
+      <ellipse cx="160" cy="210" rx="11" ry="16" fill="#06082A"/>
+      <circle cx="150" cy="192" r="9.5" fill="#FFFFFF"/>
+      <circle cx="173" cy="230" r="4.5" fill="#FFFFFF" opacity="0.85"/>
+      <path d="M130 184 Q140 156 166 156 Q184 158 190 174" fill="none" stroke="#05061F" stroke-width="5" stroke-linecap="round"/>
+    </g></g>
+    <g id="surprised-eye-right"><g>
+      <ellipse cx="280" cy="208" rx="33" ry="42" fill="#0A0D3A"/>
+      <ellipse cx="280" cy="215" rx="28" ry="35" fill="url(#eyeIris)"/>
+      <ellipse cx="280" cy="210" rx="11" ry="16" fill="#06082A"/>
+      <circle cx="270" cy="192" r="9.5" fill="#FFFFFF"/>
+      <circle cx="293" cy="230" r="4.5" fill="#FFFFFF" opacity="0.85"/>
+      <path d="M310 184 Q300 156 274 156 Q256 158 250 174" fill="none" stroke="#05061F" stroke-width="5" stroke-linecap="round"/>
+    </g></g>
+    <g stroke="#FF8FBD" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.85">
+      <path d="M104 252 L120 249"/><path d="M112 259 L127 256"/>
+      <path d="M336 252 L320 249"/><path d="M328 259 L313 256"/>
+    </g>
+    <path d="M211 236 Q220 231 229 236 Q225 246 220 247 Q215 246 211 236 Z" fill="#1A1A4A"/>
+    <ellipse cx="218" cy="236" rx="3" ry="1.6" fill="#FFFFFF" opacity="0.55"/>
+    <path d="M220 247 L220 251" stroke="#1A1A4A" stroke-width="2" stroke-linecap="round"/>
+    <g id="surprised-mouth">
+      <ellipse cx="220" cy="268" rx="11" ry="15" fill="#FF6FAE" stroke="#5A1F55" stroke-width="2.5"/>
+      <ellipse cx="220" cy="274" rx="6" ry="7" fill="#FF9EC7"/>
+    </g>
+    <g fill="#B04BFF"><g transform="rotate(14 384 70)"><rect x="378" y="38" width="12" height="38" rx="6"/><circle cx="384" cy="92" r="6.5"/></g><g transform="rotate(14 412 84)"><rect x="407" y="56" width="10" height="30" rx="5"/><circle cx="412" cy="99" r="5.5"/></g></g>
+  </g>
+
+  <!-- ===== ekspresi: sleepy ===== -->
+  <g id="face-sleepy" class="face" visibility="hidden">
+    <ellipse cx="150" cy="162" rx="12" ry="4.5" fill="#B9B3F5" opacity="0.85" transform="rotate(-8 150 162)"/>
+    <ellipse cx="290" cy="162" rx="12" ry="4.5" fill="#B9B3F5" opacity="0.85" transform="rotate(8 290 162)"/>
+    <g id="sleepy-eye-left"><path d="M133 204 Q160 228 187 204" fill="none" stroke="#05061F" stroke-width="6" stroke-linecap="round"/></g>
+    <g id="sleepy-eye-right"><path d="M253 204 Q280 228 307 204" fill="none" stroke="#05061F" stroke-width="6" stroke-linecap="round"/></g>
+    <g stroke="#FF8FBD" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.85">
+      <path d="M104 252 L120 249"/><path d="M112 259 L127 256"/>
+      <path d="M336 252 L320 249"/><path d="M328 259 L313 256"/>
+    </g>
+    <path d="M211 236 Q220 231 229 236 Q225 246 220 247 Q215 246 211 236 Z" fill="#1A1A4A"/>
+    <ellipse cx="218" cy="236" rx="3" ry="1.6" fill="#FFFFFF" opacity="0.55"/>
+    <path d="M220 247 L220 251" stroke="#1A1A4A" stroke-width="2" stroke-linecap="round"/>
+    <g id="sleepy-mouth">
+      <path d="M205 259 Q212.5 266 220 259 Q227.5 266 235 259" fill="none" stroke="#5A1F55" stroke-width="3" stroke-linecap="round"/>
+    </g>
+    <g font-family="Arial, Helvetica, sans-serif" font-weight="800" font-style="italic" fill="#6D8CFF"><text x="372" y="84" font-size="40">Z</text><text x="406" y="48" font-size="26">z</text></g>
+  </g>
+
+  <!-- ===== ekspresi: angry ===== -->
+  <g id="face-angry" class="face" visibility="hidden">
+    <ellipse cx="150" cy="162" rx="12" ry="4.5" fill="#B9B3F5" opacity="0.85" transform="rotate(-8 150 162)"/>
+    <ellipse cx="290" cy="162" rx="12" ry="4.5" fill="#B9B3F5" opacity="0.85" transform="rotate(8 290 162)"/>
+    <g id="angry-eye-left"><g>
+      <clipPath id="clipL160"><polygon points="120,172 200,208 200,262 120,262"/></clipPath>
+      <g clip-path="url(#clipL160)">
+        <ellipse cx="160" cy="210" rx="30" ry="38" fill="#0A0D3A"/>
+        <ellipse cx="160" cy="218" rx="25" ry="31" fill="url(#eyeIris)"/>
+        <ellipse cx="160" cy="216" rx="12" ry="18" fill="#06082A"/>
+        <circle cx="153" cy="206" r="6.5" fill="#FFFFFF"/>
+        <circle cx="171" cy="230" r="3.5" fill="#FFFFFF" opacity="0.85"/>
+      </g>
+      <path d="M126 176 Q160 184 192 206" fill="none" stroke="#05061F" stroke-width="7" stroke-linecap="round"/>
+    </g></g>
+    <g id="angry-eye-right"><g>
+      <clipPath id="clipR280"><polygon points="320,172 240,208 240,262 320,262"/></clipPath>
+      <g clip-path="url(#clipR280)">
+        <ellipse cx="280" cy="210" rx="30" ry="38" fill="#0A0D3A"/>
+        <ellipse cx="280" cy="218" rx="25" ry="31" fill="url(#eyeIris)"/>
+        <ellipse cx="280" cy="216" rx="12" ry="18" fill="#06082A"/>
+        <circle cx="273" cy="206" r="6.5" fill="#FFFFFF"/>
+        <circle cx="291" cy="230" r="3.5" fill="#FFFFFF" opacity="0.85"/>
+      </g>
+      <path d="M314 176 Q280 184 248 206" fill="none" stroke="#05061F" stroke-width="7" stroke-linecap="round"/>
+    </g></g>
+    <g stroke="#FF8FBD" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.85">
+      <path d="M104 252 L120 249"/><path d="M112 259 L127 256"/>
+      <path d="M336 252 L320 249"/><path d="M328 259 L313 256"/>
+    </g>
+    <path d="M211 236 Q220 231 229 236 Q225 246 220 247 Q215 246 211 236 Z" fill="#1A1A4A"/>
+    <ellipse cx="218" cy="236" rx="3" ry="1.6" fill="#FFFFFF" opacity="0.55"/>
+    <path d="M220 247 L220 251" stroke="#1A1A4A" stroke-width="2" stroke-linecap="round"/>
+    <g id="angry-mouth">
+      <path d="M194 262 Q220 250 246 262 Q242 286 220 288 Q198 286 194 262 Z" fill="#FF6FAE" stroke="#5A1F55" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M200 262 L209 260 L205 271 Z" fill="#FFFFFF"/>
+      <path d="M240 262 L231 260 L235 271 Z" fill="#FFFFFF"/>
+      <ellipse cx="220" cy="279" rx="11" ry="5" fill="#FF9EC7"/>
+    </g>
+    <g stroke="#FF3B4A" stroke-width="5" stroke-linecap="round" fill="none" transform="translate(338 128)"><path d="M-17 -17 Q-5 -12 -3 -1"/><path d="M17 -17 Q5 -12 3 -1"/><path d="M-17 17 Q-5 12 -3 1"/><path d="M17 17 Q5 12 3 1"/></g>
+  </g>
+
+  <!-- ===== ekspresi: sad ===== -->
+  <g id="face-sad" class="face" visibility="hidden">
+    <ellipse cx="150" cy="162" rx="12" ry="4.5" fill="#B9B3F5" opacity="0.85" transform="rotate(-8 150 162)"/>
+    <ellipse cx="290" cy="162" rx="12" ry="4.5" fill="#B9B3F5" opacity="0.85" transform="rotate(8 290 162)"/>
+    <g id="sad-eye-left"><g>
+      <ellipse cx="160" cy="211" rx="30" ry="38" fill="#0A0D3A"/>
+      <ellipse cx="160" cy="219" rx="25" ry="31" fill="url(#eyeIris)"/>
+      <ellipse cx="160" cy="214" rx="15" ry="21" fill="#06082A"/>
+      <circle cx="152" cy="198" r="11" fill="#FFFFFF"/>
+      <circle cx="171" cy="231" r="5.5" fill="#FFFFFF" opacity="0.9"/>
+      <path d="M130 200 Q152 186 188 164" fill="none" stroke="#05061F" stroke-width="5" stroke-linecap="round"/>
+      <path d="M146 246 Q138 262 146 270 Q154 262 146 246 Z" fill="#7DB8FF"/>
+      <path d="M174 252 Q168 264 174 270 Q180 264 174 252 Z" fill="#7DB8FF" opacity="0.85"/>
+    </g></g>
+    <g id="sad-eye-right"><g>
+      <ellipse cx="280" cy="211" rx="30" ry="38" fill="#0A0D3A"/>
+      <ellipse cx="280" cy="219" rx="25" ry="31" fill="url(#eyeIris)"/>
+      <ellipse cx="280" cy="214" rx="15" ry="21" fill="#06082A"/>
+      <circle cx="272" cy="198" r="11" fill="#FFFFFF"/>
+      <circle cx="291" cy="231" r="5.5" fill="#FFFFFF" opacity="0.9"/>
+      <path d="M310 200 Q288 186 252 164" fill="none" stroke="#05061F" stroke-width="5" stroke-linecap="round"/>
+      <path d="M266 246 Q258 262 266 270 Q274 262 266 246 Z" fill="#7DB8FF"/>
+      <path d="M294 252 Q288 264 294 270 Q300 264 294 252 Z" fill="#7DB8FF" opacity="0.85"/>
+    </g></g>
+    <g stroke="#FF8FBD" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.85">
+      <path d="M104 252 L120 249"/><path d="M112 259 L127 256"/>
+      <path d="M336 252 L320 249"/><path d="M328 259 L313 256"/>
+    </g>
+    <path d="M211 236 Q220 231 229 236 Q225 246 220 247 Q215 246 211 236 Z" fill="#1A1A4A"/>
+    <ellipse cx="218" cy="236" rx="3" ry="1.6" fill="#FFFFFF" opacity="0.55"/>
+    <path d="M220 247 L220 251" stroke="#1A1A4A" stroke-width="2" stroke-linecap="round"/>
+    <g id="sad-mouth">
+      <path d="M204 277 Q212 262 220 267 Q228 262 236 277 Q220 270 204 277 Z" fill="#FF6FAE" stroke="#5A1F55" stroke-width="2.5" stroke-linejoin="round"/>
+    </g>
+    
+  </g>
+<metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTpjODliZGJiZC0wNWEwLTRhZTQtOWYzNy01OTY4MTUyZmNkOGUAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaMyCUdS86bokDSijMPTnjvMAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDpiN2IzMTdiZC0yNzZkLTQ0YTUtYmUyMC01NDI3NTk4OWM1ODVscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNoRgA4DvteJfrQjmqnP2WbFgAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggFriRnn3EANYff9XurI5K7+7t3fSjDLHi+lYEnmbgDWakZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaAMC47DE6A7/SQR3Mnu5jV8AAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRMAAAAAAAAAAAAAAAAZGhhc2hYIDqSPqHldywMNfAKCWOPf2CLETqIm7z9uAqV0ZEEOwpzZG5hbWVuanVtYmYgbWFuaWZlc3RqZXhjbHVzaW9uc4GiZXN0YXJ0GWN5Zmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOmM4OWJkYmJkLTA1YTAtNGFlNC05ZjM3LTU5NjgxNTJmY2Q4ZS9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOjNiNTdlZDQzLWFmOGYtNDZlMy1hMTNlLThlOGI0N2FlMjViMHJjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCAWuJGefcQA1h9/1e6sjkrv7u3d9KMMseL6VgSeZuANZqJjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFggE3yLatVvowwz3Gt05PSIKiH+pFZKSog9DYlqS/77bxiiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFgghOdi/w4S9BCSmdrK36y5zXvCa73nQh6LTJ0hgYzNwGh0Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQLFPxxmctvb1V+efFHSM/4dGIOsB6U+kX2qOzMahFjGpMV14UQSJDncZgJrMXYoWbOCdNABWE4xso7kFzsFJW1Q=</c2pa:manifest></metadata></svg>

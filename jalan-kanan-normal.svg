@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+================================================================================
+ TCS MASCOT - JALAN KANAN - EKSPRESI: NORMAL
+ Official Mascot of The Choco Studios | dasar bentuk: tcs-mascot-reference.svg
+================================================================================
+ Canvas : viewBox 0 0 440 560, titik tengah badan x = 220 (tampak depan)
+ Pakai  : ekspresi DEFAULT: idle, jalan, dan semua pose dasar
+
+ YANG BERBEDA DARI EKSPRESI NORMAL (hanya bagian wajah, badan/kepala/telinga tetap):
+   mata  : terbuka bulat penuh: elips luar 30x38, iris gradasi biru, pupil gelap 15x21, highlight putih besar (kiri atas) + kecil (kanan bawah), alis melengkung lembut
+   mulut : terbuka kecil pink + 2 taring + lidah pink (mulut default referensi)
+   efek  : tidak ada
+
+ BAGIAN (id) tampak depan, dari belakang ke depan:
+   #shadow  #tail  #hood-back  #legs  #body (+#logo-tcs)  #sleeves  #hands
+   #ears  #head-tufts  #head  #ear-tufts  #face (#eye-left #eye-right #mouth)
+BAGIAN (id) tampak samping / jalan, dari belakang ke depan:
+   #shadow  #tail  #arm-far  #leg-far  #leg-near  #upper (isi: #hood-back #body
+   #arm-near #ears #head-tufts #head #ear-tufts #face(#eye-near) )
+
+ TITIK PUTAR ANIMASI JALAN (koordinat canvas 440x560, satuan derajat):
+   #leg-near  rotate +22 <-> -22   pivot (222,456)
+   #leg-far   kebalikan leg-near   pivot (234,456)
+   #arm-near  kebalikan leg-near, amplitudo 26    pivot (222,350)
+   #arm-far   kebalikan arm-near   pivot (222,350)
+   #tail      rotate +3 <-> -3     pivot (180,430)
+   #upper     naik-turun 0 -> -5px -> 0, 2x per siklus (periode = setengah siklus)
+   Siklus 1 langkah penuh = 0.9 detik, easing spline .37 0 .63 1 (halus di ujung ayunan)
+
+ CATATAN TAMPAK SAMPING: hanya 1 mata (mata dekat) yang digambar, memakai kode mata
+ depan yang sama lalu dipipihkan: translate(272 0) scale(.78 1) translate(-280 0).
+ Hidung: translate(336 0) scale(.7 1). Mulut: translate(309 0) scale(.55 1).
+ Tampak KIRI = seluruh adegan dicerminkan translate(440 0) scale(-1 1); logo TCS
+ dibalik lagi supaya tulisannya tetap terbaca.
+
+ ATURAN BENTUK (jangan dilanggar, sama seperti referensi):
+   - Tidak ada kuku / cakar. Tangan dan kaki bulat halus.
+   - Bulu = gumpalan lancip (tuft), bukan helai.
+   - Telinga: luar navy gelap, dalam ungu gradasi. Tinggi, lancip.
+   - Logo TCS di dada selalu ada, swoosh biru melengkung di kanan teks.
+================================================================================
+-->
+<svg xmlns="http://www.w3.org/2000/svg" id="tcs-mascot" viewBox="0 0 440 560" width="440" height="560" role="img" aria-label="TCS Mascot, side right normal anim" xmlns:c2pa="http://c2pa.org/manifest">
+<title>TCS Mascot side right normal anim</title>
+<defs>
+    <!-- Bulu putih: terang di tengah, lavender di tepi -->
+    <radialGradient id="furGrad" cx="0.5" cy="0.35" r="0.8">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="0.55" stop-color="#F1EFFF"/>
+      <stop offset="1" stop-color="#CFC9FF"/>
+    </radialGradient>
+    <linearGradient id="tailGrad" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#CFC9FF"/>
+      <stop offset="0.5" stop-color="#F1EFFF"/>
+      <stop offset="1" stop-color="#FFFFFF"/>
+    </linearGradient>
+    <linearGradient id="earOuter" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2A2080"/>
+      <stop offset="1" stop-color="#120D38"/>
+    </linearGradient>
+    <linearGradient id="earInner" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#A98CFF"/>
+      <stop offset="1" stop-color="#6D4CFF"/>
+    </linearGradient>
+    <linearGradient id="eyeIris" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0C1450"/>
+      <stop offset="0.7" stop-color="#1D3FD0"/>
+      <stop offset="1" stop-color="#3B82FF"/>
+    </linearGradient>
+    <linearGradient id="hoodGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1F1B5C"/>
+      <stop offset="1" stop-color="#120F33"/>
+    </linearGradient>
+    <linearGradient id="blueGlow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5AA8FF"/>
+      <stop offset="1" stop-color="#2B6CFF"/>
+    </linearGradient>
+    <linearGradient id="swooshGrad" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#2B8CFF" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#2B8CFF"/>
+      <stop offset="1" stop-color="#8FC4FF"/>
+    </linearGradient>
+    <radialGradient id="shadowGrad" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#000000" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+  <clipPath id="torsoClip"><path d="M178 336 C168 380 166 420 176 452 L272 452 C284 420 282 380 272 340 Q224 320 178 336 Z"/></clipPath></defs>
+
+  <g id="shadow"><ellipse cx="222" cy="534" rx="120" ry="15" fill="url(#shadowGrad)"/></g>
+  <g id="tail"><animateTransform attributeName="transform" type="rotate" values="3 180 430;-3 180 430;3 180 430" dur="0.9s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".37 0 .63 1;.37 0 .63 1"/><g transform="translate(472 0) scale(-1 1)">
+    <path d="M292 440 Q312 452 338 462 Q336 450 348 444 Q366 448 386 438 Q382 428 390 418 Q410 384 402 346 Q396 310 368 274 Q366 312 346 330 Q326 344 300 350 Z" fill="url(#tailGrad)"/>
+    <g fill="none" stroke="#CFC9FF" stroke-width="3" stroke-linecap="round" opacity="0.75">
+      <path d="M314 430 Q372 410 386 342"/>
+      <path d="M320 410 Q362 390 374 330"/>
+      <path d="M324 392 Q352 372 362 322"/>
+      <path d="M336 446 Q376 436 394 398"/>
+    </g></g></g>
+  <g id="arm-far"><animateTransform attributeName="transform" type="rotate" values="26 222 350;-26 222 350;26 222 350" dur="0.9s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".37 0 .63 1;.37 0 .63 1"/><path d="M204 348 Q222 336 241 348 C250 380 248 412 244 438 L204 436 C196 412 196 380 204 348 Z" fill="#0E0C2E"/>
+      <path d="M202 424 Q224 434 244 430 L246 446 Q224 452 204 442 Z" fill="#0E0C26"/>
+      
+      <ellipse cx="224" cy="458" rx="18" ry="16" fill="#D9D4FF"/>
+      <path d="M219 462 L217 470 M229 462 L231 470" stroke="#B9B3F5" stroke-width="2" stroke-linecap="round" fill="none"/></g>
+  <g id="leg-far"><animateTransform attributeName="transform" type="rotate" values="-22 234 456;22 234 456;-22 234 456" dur="0.9s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".37 0 .63 1;.37 0 .63 1"/><g transform="translate(12 0)">
+      <path d="M198 452 C194 478 196 502 200 514 L244 514 C248 500 248 478 246 452 Z" fill="#D9D4FF"/>
+      <ellipse cx="236" cy="521" rx="35" ry="14" fill="#D9D4FF"/>
+      <path d="M254 514 L256 526 M268 513 L271 523" stroke="#B9B3F5" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    </g></g>
+  <ellipse cx="222" cy="468" rx="56" ry="14" fill="url(#furGrad)"/>
+  <g id="leg-near"><animateTransform attributeName="transform" type="rotate" values="22 222 456;-22 222 456;22 222 456" dur="0.9s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".37 0 .63 1;.37 0 .63 1"/><g transform="translate(0 0)">
+      <path d="M198 452 C194 478 196 502 200 514 L244 514 C248 500 248 478 246 452 Z" fill="url(#furGrad)"/>
+      <ellipse cx="236" cy="521" rx="35" ry="14" fill="url(#furGrad)"/>
+      <path d="M254 514 L256 526 M268 513 L271 523" stroke="#B9B3F5" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    </g></g>
+  <g id="upper"><animateTransform attributeName="transform" type="translate" values="0 0;0 -5;0 0" dur="0.45s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".37 0 .63 1;.37 0 .63 1"/>
+    <g id="hood-back">
+      <path d="M180 298 Q128 304 130 352 Q150 362 184 348 Z" fill="#0F0D2B"/>
+      <path d="M168 316 Q146 322 148 344 Q162 348 176 340 Z" fill="#0A091F"/>
+    </g>
+    <g id="body">
+      <path d="M178 336 C168 380 166 420 176 452 L272 452 C284 420 282 380 272 340 Q224 320 178 336 Z" fill="url(#hoodGrad)"/>
+      <path d="M176 440 L272 440 L274 460 Q224 468 174 460 Z" fill="#0E0C26"/>
+      <g stroke="#2A2766" stroke-width="1.5" opacity="0.8">
+        <path d="M192 442 L192 464"/><path d="M210 442 L210 466"/><path d="M228 442 L228 467"/><path d="M246 442 L246 466"/><path d="M262 442 L262 464"/>
+      </g>
+      <path d="M250 404 L268 444" stroke="#2A2766" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <path d="M258 338 Q264 360 258 380" stroke="#2B4BD8" stroke-width="4" stroke-linecap="round" fill="none"/>
+      <rect x="254" y="378" width="8" height="12" rx="3" fill="#5AA8FF"/>
+      <g clip-path="url(#torsoClip)"><g transform=""><g transform="translate(262 0) scale(.42 1) translate(-262 0) translate(44 0)"><g id="logo-tcs">
+      <text x="212" y="376" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="800" font-style="italic" fill="#FFFFFF" letter-spacing="1">TCS</text>
+      <!-- swoosh: bulan sabit yg melingkar di SISI KANAN teks (mulai tipis di atas "C", paling tebal di kanan atas, turun melewati ujung "S", berakhir tipis di bawah "S") -->
+      <path d="M194 346 C240 330 290 348 284 376 C280 392 262 400 244 398 C262 392 272 384 272 374 C274 356 238 342 194 346 Z" fill="url(#swooshGrad)"/>
+    </g></g></g></g>
+    </g>
+    <g id="arm-near"><animateTransform attributeName="transform" type="rotate" values="-26 222 350;26 222 350;-26 222 350" dur="0.9s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines=".37 0 .63 1;.37 0 .63 1"/><path d="M204 348 Q222 336 241 348 C250 380 248 412 244 438 L204 436 C196 412 196 380 204 348 Z" fill="url(#hoodGrad)"/>
+      <path d="M202 424 Q224 434 244 430 L246 446 Q224 452 204 442 Z" fill="#0E0C26"/>
+      <path d="M210 362 L232 354 L232 386 L212 394 Z" fill="url(#blueGlow)" opacity="0.95"/>
+      <ellipse cx="224" cy="458" rx="18" ry="16" fill="url(#furGrad)"/>
+      <path d="M219 462 L217 470 M229 462 L231 470" stroke="#B9B3F5" stroke-width="2" stroke-linecap="round" fill="none"/></g>
+    <g id="ears"><path d="M236 128 C236 90 250 58 270 40 C300 62 318 98 316 140 Z" fill="#171056"/>
+      <path d="M250 124 C252 96 262 74 272 62 C292 80 302 104 302 132 Z" fill="#5C41D9"/><path d="M168 160 C150 110 160 64 186 36 C226 56 256 92 262 134 Z" fill="url(#earOuter)"/>
+      <path d="M168 160 C150 110 160 64 186 36" fill="none" stroke="#4B6BFF" stroke-width="2" opacity="0.55"/>
+      <path d="M180 142 C170 108 176 78 190 60 C218 76 238 100 244 128 Z" fill="url(#earInner)"/>
+      <path d="M184 134 C178 110 182 92 192 78 C212 92 228 108 234 126 Z" fill="#C7B4FF" opacity="0.45"/></g>
+    <g id="head-tufts" fill="url(#furGrad)">
+      <path d="M196 116 Q198 80 218 50 Q224 76 244 114 Z"/>
+      <path d="M176 120 Q170 102 182 92 Q188 106 202 114 Z"/>
+    </g>
+    <g id="head">
+      <path d="M214 98 C276 98 326 128 336 180 Q350 200 346 226 Q344 246 328 262 C312 296 270 314 222 316 C186 318 150 308 128 282 Q106 278 88 270 Q98 260 106 252 Q90 244 78 236 Q94 226 104 218 Q92 208 82 196 Q102 188 118 178 C128 126 168 98 214 98 Z" fill="url(#furGrad)"/>
+      <path d="M130 284 C150 306 186 314 222 314 C262 314 300 306 322 276 C292 298 262 304 222 304 C186 304 152 300 130 284 Z" fill="#CFC9FF" opacity="0.55"/>
+    </g>
+    <g id="ear-tufts" fill="url(#furGrad)"><path d="M190 152 Q186 126 200 118 Q206 132 226 140 Q210 148 190 152 Z"/></g>
+    <g id="face">
+      <ellipse cx="252" cy="162" rx="11" ry="4.5" fill="#B9B3F5" opacity="0.85" transform="rotate(8 252 162)"/>
+      <g id="eye-near" transform="translate(272 0) scale(.78 1) translate(-280 0)"><g>
+      <ellipse cx="280" cy="208" rx="30" ry="38" fill="#0A0D3A"/>
+      <ellipse cx="280" cy="216" rx="25" ry="31" fill="url(#eyeIris)"/>
+      <ellipse cx="280" cy="210" rx="15" ry="21" fill="#06082A"/>
+      <circle cx="271" cy="194" r="8.5" fill="#FFFFFF"/>
+      <circle cx="292" cy="228" r="4" fill="#FFFFFF" opacity="0.85"/>
+      <path d="M310 200 Q300 172 274 172 Q256 174 250 190" fill="none" stroke="#05061F" stroke-width="5" stroke-linecap="round"/>
+    </g></g>
+      <g stroke="#FF8FBD" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.85">
+        <path d="M262 256 L246 253"/><path d="M255 263 L240 260"/>
+      </g>
+      <g transform="translate(336 0) scale(.7 1) translate(-220 0)"><path d="M211 236 Q220 231 229 236 Q225 246 220 247 Q215 246 211 236 Z" fill="#1A1A4A"/>
+    <ellipse cx="218" cy="236" rx="3" ry="1.6" fill="#FFFFFF" opacity="0.55"/>
+    <path d="M220 247 L220 251" stroke="#1A1A4A" stroke-width="2" stroke-linecap="round"/></g>
+      <g transform="translate(309 0) scale(.55 1) translate(-220 0)"><g id="mouth">
+      <path d="M194 250 Q220 245 246 250 Q244 282 220 286 Q196 282 194 250 Z" fill="#FF6FAE" stroke="#5A1F55" stroke-width="2.5" stroke-linejoin="round"/>
+      <ellipse cx="220" cy="274" rx="15" ry="8" fill="#FF9EC7"/>
+      <path d="M199 251 L208 250.5 L203 261 Z" fill="#FFFFFF"/>
+      <path d="M241 251 L232 250.5 L237 261 Z" fill="#FFFFFF"/>
+    </g></g>
+    </g>
+    
+  </g>
+<metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTo0ZTAxMzE5OS1hZmVlLTQ4NjUtOGY3Yy00YWM5YjhhZTA2MzIAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaGojzV6F9hAkRVMovzukrjkAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDo1M2EwYzVkYi00MzFiLTQ2OGYtYWM5Ny04N2U0NTA5ZTllNDdscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNo6XbGxXHLPz90XUic0rTmOgAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggG79X2wbkJHaG2e8WYHaNA9+7mxlQ26kcHdE6ozXkgt+kZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaLkwsH6KG9bOlcEDEvW7uFkAAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRMAAAAAAAAAAAAAAAAZGhhc2hYIKC0SPVa+/w9Y0OgQMJjW4hNQFw/v+NA02ljwMInXC6HZG5hbWVuanVtYmYgbWFuaWZlc3RqZXhjbHVzaW9uc4GiZXN0YXJ0GTM1Zmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOjRlMDEzMTk5LWFmZWUtNDg2NS04ZjdjLTRhYzliOGFlMDYzMi9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOjg0MDZmNDViLTRiOTEtNDA4OS1hNmI3LWMzZjlhMTY0MTUwY3JjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCAbv1fbBuQkdobZ7xZgdo0D37ubGVDbqRwd0TqjNeSC36JjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFggq69nWkWUnYucKGM1MC/dlEEIr2IQD+OknYxiIzcw9USiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFgggTk/SKb1Et9eBju5HctxVRw3YiFMHvNU9yxNGZtMzEB0Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQD+lfPfORBQHGs+GKJuIxxBRI6NcZqvEN7k2fL5UmpDgooOjDmRqE6G1gVWmEB/x32AYpEHv+kvNJy/zAligPOY=</c2pa:manifest></metadata></svg>
